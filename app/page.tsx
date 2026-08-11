@@ -2,6 +2,7 @@ import HeroSection from "@/components/landing/hero/HeroSection";
 import Section02WhatWeDo from "@/components/sections/Section02WhatWeDo";
 import Section03HowItWorks from "@/components/sections/Section03HowItWorks";
 import Section04Proof from "@/components/sections/Section04Proof";
+import Section05Pricing from "@/components/sections/Section05Pricing";
 
 export default function Home() {
   return (
@@ -10,7 +11,8 @@ export default function Home() {
       <Section02WhatWeDo />
       <Section03HowItWorks />
       <Section04Proof />
-      {/* Section 05+ later */}
+      <Section05Pricing />
+      {/* Section 06+ later */}
     </main>
   );
 }

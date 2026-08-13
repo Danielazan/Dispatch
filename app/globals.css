@@ -326,3 +326,161 @@ body {
   line-height: 0.95;
   letter-spacing: 0.01em;
 }
+
+
+/* ============ SECTION 06 — DISPATCH TERMINAL ============ */
+:root {
+  --s6-ops-black: #090D10;
+  --s6-graphite: #111820;
+  --s6-raised: #182127;
+  --s6-steel: #293238;
+  --s6-muted-steel: #3A444A;
+  --s6-warm-white: #E9E4DA;
+  --s6-soft-white: #F3EFE7;
+  --s6-muted-text: #8A918F;
+  --s6-brass: #B98A4E;
+  --s6-champagne: #D4B06A;
+  --s6-deep-brass: #8F693C;
+  --s6-success: #819B72;
+  --s6-error: #B66A5E;
+  --s6-border: rgba(233, 228, 218, 0.10);
+  --s6-border-2: rgba(233, 228, 218, 0.18);
+  --s6-border-brass: rgba(185, 138, 78, 0.35);
+}
+
+/* ---- ambient atmosphere: dims in, dims out (reversible) ---- */
+.s6-glow { opacity: 0; transition: opacity 1.4s ease; }
+.in-view .s6-glow { opacity: 1; }
+
+.s6-path { opacity: 0; transition: opacity 0.8s ease; }
+.in-view .s6-path { opacity: 1; transition-delay: 0.2s; }
+
+.s6-signal-wrap { opacity: 0; transition: opacity 0.5s ease; }
+.in-view .s6-signal-wrap { opacity: 1; }
+
+.s6-signal-path {
+  background: linear-gradient(90deg, transparent 0%, rgba(185,138,78,0.06) 20%, rgba(185,138,78,0.06) 80%, transparent 100%);
+}
+.s6-frame-edge { background: var(--s6-border-brass); }
+
+/* ---- ambient reveals: staggered ENTER, quick unified EXIT (delays live on .in-view only) ---- */
+.s6-reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.in-view .s6-reveal {
+  opacity: 1;
+  transform: none;
+  transition-duration: 0.65s;
+  transition-delay: var(--d, 0ms);
+}
+
+.s6-line { display: block; overflow: hidden; }
+.s6-line > span {
+  display: block;
+  transform: translateY(110%);
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.in-view .s6-line > span {
+  transform: translateY(0);
+  transition-duration: 0.8s;
+  transition-delay: var(--d, 0ms);
+}
+
+/* ---- clock-lock reveal (20 / MINUTES / GUARANTEED) ---- */
+.s6-clock { display: block; overflow: hidden; }
+.s6-clock > span {
+  display: block;
+  transform: translateY(105%);
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.in-view .s6-clock > span {
+  transform: translateY(0);
+  transition-duration: 0.7s;
+  transition-delay: var(--d, 0ms);
+}
+
+.s6-rule {
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.in-view .s6-rule {
+  transform: scaleX(1);
+  transition-duration: 0.55s;
+  transition-delay: var(--d, 0ms);
+}
+
+/* ---- field acceptance line (user validation) ---- */
+.s6-accept-line {
+  background: var(--s6-brass);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.s6-accept-line.valid { transform: scaleX(1); opacity: 0.5; }
+
+/* ---- CTA hover sweep (transmission signal, §36) ---- */
+.s6-cta-sweep {
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.12) 50%, transparent 100%);
+  transform: translateX(-100%);
+}
+.group\/cta:hover .s6-cta-sweep { animation: s6-sweep 0.6s ease-out forwards; }
+@keyframes s6-sweep { to { transform: translateX(100%); } }
+
+/* ---- one-time READY shimmer across the CTA (§23 moment) ---- */
+.s6-shimmer::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -45%;
+  width: 40%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.38), transparent);
+}
+.s6-shimmer.play::after { animation: s6-shimmer-sweep 0.85s ease-out forwards; }
+@keyframes s6-shimmer-sweep { to { transform: translateX(480%); } }
+
+/* ---- submitting signal track ---- */
+.s6-submit-track { background: rgba(233, 228, 218, 0.08); }
+.s6-submit-signal {
+  background: var(--s6-champagne);
+  animation: s6-travel 1.2s ease-in-out infinite;
+}
+@keyframes s6-travel {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(400%); }
+}
+
+/* ---- focus + select chrome ---- */
+#lead-form :focus-visible {
+  outline: 1px solid var(--s6-brass);
+  outline-offset: 3px;
+}
+.s6-select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' fill='none'%3E%3Cpath d='M3 4.5L6 7.5L9 4.5' stroke='%238A918F' stroke-width='1.2'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .s6-reveal, .s6-line > span, .s6-clock > span, .s6-rule {
+    transition: none; transform: none; opacity: 1;
+  }
+  .s6-glow, .s6-path, .s6-signal-wrap { transition: none; opacity: 1; }
+  .s6-shimmer::after, .s6-cta-sweep, .s6-submit-signal { animation: none; }
+  .s6-accept-line { transition: none; }
+}
+
+/* ---- conditional field mount reveal ---- */
+.s6-conditional { animation: s6-field-in 0.45s cubic-bezier(0.22, 1, 0.36, 1); }
+@keyframes s6-field-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .s6-conditional { animation: none; }
+}

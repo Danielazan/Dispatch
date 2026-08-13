@@ -484,3 +484,80 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .s6-conditional { animation: none; }
 }
+
+/* ============ SECTION 07 — THE LAST MILE / FOOTER ============ */
+:root {
+  --s7-ops-black: #090D10;
+  --s7-graphite: #111820;
+  --s7-raised: #182127;
+  --s7-steel: #293238;
+  --s7-warm-white: #E9E4DA;
+  --s7-soft-white: #F3EFE7;
+  --s7-muted-text: #8A918F;
+  --s7-brass: #B98A4E;
+  --s7-highlight: #D4B06A;
+  --s7-deep-brass: #8F693C;
+  --s7-border: rgba(233, 228, 218, 0.10);
+  --s7-border-brass: rgba(185, 138, 78, 0.25);
+}
+
+/* ---- navigation links: directional rule grows left → right (§24) ---- */
+.s7-link {
+  position: relative;
+  transition: color 0.25s ease, transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.s7-link:hover { color: var(--s7-warm-white); transform: translateX(2px); }
+.s7-link-rule {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: rgba(185, 138, 78, 0.55);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.s7-link:hover .s7-link-rule,
+.s7-link:focus-visible .s7-link-rule { transform: scaleX(1); }
+
+/* ---- social icons: mature hover (§21) ---- */
+.s7-social {
+  transition:
+    transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.25s ease,
+    background-color 0.25s ease,
+    color 0.25s ease;
+}
+.s7-social:hover {
+  transform: translateY(-2px);
+  border-color: rgba(185, 138, 78, 0.45);
+  background-color: rgba(185, 138, 78, 0.07);
+  color: var(--s7-highlight);
+}
+
+/* ---- contact items: icon warms, text shifts 2px (§27) ---- */
+.s7-contact-icon,
+.s7-contact-text {
+  transition: color 0.25s ease, transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.s7-contact-icon { color: var(--s7-muted-text); }
+.s7-contact-item:hover .s7-contact-icon { color: var(--s7-highlight); }
+.s7-contact-item:hover .s7-contact-text { transform: translateX(2px); }
+
+/* ---- focus ---- */
+footer :focus-visible {
+  outline: 1px solid var(--s7-brass);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .s7-link,
+  .s7-link-rule,
+  .s7-social,
+  .s7-contact-icon,
+  .s7-contact-text { transition: none; }
+  .s7-link:hover,
+  .s7-social:hover { transform: none; }
+  .s7-contact-item:hover .s7-contact-text { transform: none; }
+}

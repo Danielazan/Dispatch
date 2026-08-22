@@ -1,0 +1,29 @@
+/* ============ pipeline theme v2 ============ */
+.pipe-scrollbar::-webkit-scrollbar { height: 8px; width: 8px; }
+.pipe-scrollbar::-webkit-scrollbar-thumb { background: #1c242a; border-radius: 4px; }
+.pipe-scrollbar::-webkit-scrollbar-track { background: transparent; }
+
+/* BOARD GRID — fluid at desktop (no horizontal scroll ≥1280), swipeable below */
+.pipe-board-wrap { overflow-x: auto; }
+.pipe-board {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(var(--pipe-cols, 6), minmax(210px, 1fr));
+}
+@media (min-width: 1280px) {
+  .pipe-board-wrap { overflow-x: visible; }
+  .pipe-board { grid-template-columns: repeat(var(--pipe-cols, 6), minmax(0, 1fr)); }
+}
+
+.pipe-spin { animation: pipe-spin 1.6s linear infinite; }
+@keyframes pipe-spin { to { transform: rotate(360deg); } }
+
+.pipe-drawer { animation: pipe-drawer-in 0.45s cubic-bezier(0.22, 1, 0.36, 1); }
+@keyframes pipe-drawer-in { from { transform: translateX(24px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+.pipe-pop { animation: pipe-pop-in 0.28s cubic-bezier(0.22, 1, 0.36, 1); transform-origin: top right; }
+@keyframes pipe-pop-in { from { transform: translateY(-4px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .pipe-spin, .pipe-drawer, .pipe-pop { animation: none !important; }
+}

@@ -5,11 +5,13 @@ import Section04Proof from "@/components/sections/Section04Proof";
 import Section05Pricing from "@/components/sections/Section05Pricing";
 import Section06Dispatch from "@/components/sections/Section06Dispatch";
 import Section07Footer from "@/components/sections/Section07Footer";
+import Navigation from "@/components/landing/Navigation";
 
 export default function Home() {
   return (
     <>
       <main>
+        <Navigation />
         <HeroSection />
         <Section02WhatWeDo />
         <Section03HowItWorks />

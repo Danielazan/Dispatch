@@ -1,8 +1,9 @@
-"use client";
+/* ============ DispatchField v2 ============ */
+'use client';
 
-import { useId } from "react";
-import type { FieldConfig } from "./dispatchData";
-import { isFieldValueValid } from "./dispatchData";
+import { useId } from 'react';
+import type { FieldConfig } from './dispatchData';
+import { isFieldValueValid } from './dispatchData';
 
 interface DispatchFieldProps {
   config: FieldConfig;
@@ -13,6 +14,8 @@ interface DispatchFieldProps {
   className?: string;
   onChange: (key: string, value: string) => void;
   onBlur: (key: string) => void;
+  /** Server-reported error message for this field (from backend details[].path). */
+  serverError?: string;
 }
 
 export default function DispatchField({
@@ -21,16 +24,19 @@ export default function DispatchField({
   touched,
   required,
   placeholder,
-  className = "",
+  className = '',
   onChange,
   onBlur,
+  serverError,
 }: DispatchFieldProps) {
   const id = useId();
   const isValid = isFieldValueValid(config, value, required);
-  const showError = touched && !isValid && required;
+  const hasClientError = touched && !isValid && required;
+  const showError = hasClientError || !!serverError;
+  const errorMessage = serverError || (hasClientError ? 'Required' : null);
 
   const inputClasses = `w-full rounded-[2px] border bg-[var(--s6-raised)] px-3 py-2.5 text-[13px] text-[var(--s6-warm-white)] placeholder:text-[var(--s6-muted-text)]/60 transition-colors duration-200 focus:border-[var(--s6-brass)] focus:outline-none ${
-    showError ? "border-[var(--s6-error)]" : "border-[var(--s6-border)]"
+    showError ? 'border-[var(--s6-error)]' : 'border-[var(--s6-border)]'
   }`;
 
   return (
@@ -45,13 +51,13 @@ export default function DispatchField({
         )}
       </label>
 
-      {config.type === "select" ? (
+      {config.type === 'select' ? (
         <select
           id={id}
           value={value}
           onChange={(e) => onChange(config.key, e.target.value)}
           onBlur={() => onBlur(config.key)}
-          className={`s6-select ${inputClasses} ${!value ? "text-[var(--s6-muted-text)]/60" : ""}`}
+          className={`s6-select ${inputClasses} ${!value ? 'text-[var(--s6-muted-text)]/60' : ''}`}
           aria-invalid={showError}
         >
           <option value="" disabled>
@@ -76,15 +82,14 @@ export default function DispatchField({
         />
       )}
 
-      {/* acceptance line */}
       <span
         aria-hidden="true"
-        className={`s6-accept-line absolute bottom-0 left-0 h-[1.5px] w-full ${isValid && value ? "valid" : ""}`}
+        className={`s6-accept-line absolute bottom-0 left-0 h-[1.5px] w-full ${isValid && value && !showError ? 'valid' : ''}`}
       />
 
-      {showError && (
+      {errorMessage && (
         <p className="mt-1 text-[10px] text-[var(--s6-error)]" role="alert">
-          Required
+          {errorMessage}
         </p>
       )}
     </div>

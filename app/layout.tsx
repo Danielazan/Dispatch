@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Oswald, Inter, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
-import Navigation from "@/components/landing/Navigation";
+
 
 const oswald = Oswald({
   weight: ["500", "600", "700"],
@@ -23,7 +23,7 @@ const plexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Ironhaul Dispatch — Freight Dispatch Services",
+  title: "AIK Freight Dispatch — Freight Dispatch Services",
   description:
     "We handle the calls, negotiation, and paperwork so you can focus on what matters—driving and growing your business.",
 };
@@ -32,7 +32,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${oswald.variable} ${inter.variable} ${plexMono.variable}`}>
       <body className="bg-ink-950 text-ivory-50 antialiased">
-        <Navigation />
+        
         {children}
       </body>
     </html>

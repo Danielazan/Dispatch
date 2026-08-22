@@ -1,7 +1,8 @@
-"use client";
+/* ============ DispatchTerminal v2 ============ */
+'use client';
 
-import { useCallback, useEffect, useRef, useState } from "react";
-import DispatchField from "./DispatchField";
+import { useCallback, useEffect, useRef, useState } from 'react';
+import DispatchField from './DispatchField';
 import {
   initialFormData,
   FIELD_CONFIGS,
@@ -11,26 +12,37 @@ import {
   submitDispatchRequest,
   type DispatchFormData,
   type DispatchFormStatus,
-} from "./dispatchData";
+  type SubmitResult,
+} from './dispatchData';
 
 interface DispatchTerminalProps {
   /** Fires on first focus/input — lets the cinematic layer snap the boot to completion. */
   onInteracted?: () => void;
 }
 
+/** Map backend error path → frontend field key for inline error display. */
+const BACKEND_PATH_TO_FIELD: Record<string, string> = {
+  contactName: 'fullName',
+  email: 'email',
+  phone: 'phone',
+  authorityNumber: 'authorityNumber',
+  consentAccepted: 'consent',
+};
+
 export default function DispatchTerminal({ onInteracted }: DispatchTerminalProps) {
   const [formData, setFormData] = useState<DispatchFormData>(initialFormData);
   const [touched, setTouched] = useState<Record<string, boolean>>({});
-  const [status, setStatus] = useState<DispatchFormStatus>("idle");
+  const [status, setStatus] = useState<DispatchFormStatus>('idle');
   const [shimmer, setShimmer] = useState(false);
   const shimmerPlayed = useRef(false);
+  const [result, setResult] = useState<SubmitResult | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
   const validCount = getValidCount(formData);
   const requiredCount = getRequiredCount(formData);
   const isReady = validCount === requiredCount;
-  const statusLabel = isReady ? "READY TO DISPATCH" : "STANDING BY";
+  const statusLabel = isReady ? 'READY TO DISPATCH' : 'STANDING BY';
 
-  /* One-time CTA shimmer the first moment the form becomes READY TO DISPATCH. */
   useEffect(() => {
     if (isReady && !shimmerPlayed.current) {
       shimmerPlayed.current = true;
@@ -43,9 +55,17 @@ export default function DispatchTerminal({ onInteracted }: DispatchTerminalProps
   const handleChange = useCallback(
     (key: string, value: string | boolean) => {
       setFormData((prev) => ({ ...prev, [key]: value }));
+      /* Clear any server-reported error for this field the moment the user edits it */
+      if (fieldErrors[key]) {
+        setFieldErrors((prev) => {
+          const next = { ...prev };
+          delete next[key];
+          return next;
+        });
+      }
       onInteracted?.();
     },
-    [onInteracted]
+    [onInteracted, fieldErrors]
   );
 
   const handleBlur = useCallback((key: string) => {
@@ -58,20 +78,39 @@ export default function DispatchTerminal({ onInteracted }: DispatchTerminalProps
     FIELD_CONFIGS.forEach((f) => (allTouched[f.key] = true));
     allTouched.consent = true;
     setTouched(allTouched);
-
     if (!isReady) return;
 
-    setStatus("submitting");
-    try {
-      const result = await submitDispatchRequest(formData);
-      setStatus(result.success ? "success" : "error");
-    } catch {
-      setStatus("error");
+    setStatus('submitting');
+    setFieldErrors({});
+    setResult(null);
+
+    const r = await submitDispatchRequest(formData);
+    setResult(r);
+
+    if (r.success) {
+      setStatus('success');
+    } else if (r.kind === 'validation') {
+      setStatus('error');
+      const mapped: Record<string, string> = {};
+      for (const [path, msg] of Object.entries(r.fieldErrors)) {
+        const field = BACKEND_PATH_TO_FIELD[path] ?? path;
+        mapped[field] = msg;
+      }
+      setFieldErrors(mapped);
+    } else {
+      setStatus('error');
     }
   };
 
+  const resetToIdle = () => {
+    setStatus('idle');
+    setResult(null);
+    setFieldErrors({});
+  };
+
   /* ---- SUCCESS — dispatch handoff ---- */
-  if (status === "success") {
+  if (status === 'success') {
+    const recipient = result?.success ? result.recipientEmail : formData.email;
     return (
       <div
         data-s6="terminal"
@@ -82,7 +121,7 @@ export default function DispatchTerminal({ onInteracted }: DispatchTerminalProps
           <span className="font-tech text-[10px] tracking-[0.18em] text-[var(--s6-muted-text)]">DISPATCH INTAKE</span>
           <span className="flex items-center gap-2 font-tech text-[10px] tracking-[0.14em] text-[var(--s6-success)]">
             <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-[var(--s6-success)]" />
-            ACTIVE
+            CONFIRMED
           </span>
         </div>
         <div className="flex flex-col items-center py-8 text-center">
@@ -92,8 +131,10 @@ export default function DispatchTerminal({ onInteracted }: DispatchTerminalProps
           <h3 className="font-display text-[24px] font-semibold uppercase tracking-[0.02em] text-[var(--s6-warm-white)]">
             REQUEST RECEIVED
           </h3>
-          <p className="mt-3 max-w-[32ch] text-[13px] leading-relaxed text-[var(--s6-muted-text)]">
-            A dispatch specialist will contact you shortly.
+          <p className="mt-3 max-w-[36ch] text-[13px] leading-relaxed text-[var(--s6-muted-text)]">
+            Your onboarding link is on its way to{' '}
+            <span className="font-semibold text-[var(--s6-warm-white)]">{recipient}</span>.
+            Check your inbox (and spam folder) — the link will take you straight to your carrier profile.
           </p>
           <div className="mt-6 border-t border-[var(--s6-border)] pt-6">
             <p className="font-tech text-[10px] tracking-[0.16em] text-[var(--s6-muted-text)]">EXPECTED RESPONSE</p>
@@ -105,7 +146,24 @@ export default function DispatchTerminal({ onInteracted }: DispatchTerminalProps
   }
 
   /* ---- ERROR ---- */
-  if (status === "error") {
+  if (status === 'error') {
+    const isRateLimited = result?.kind === 'rate_limited';
+    const isNetwork = result?.kind === 'network';
+    const headline = isRateLimited
+      ? 'TOO MANY SUBMISSIONS'
+      : isNetwork
+        ? 'CONNECTION PROBLEM'
+        : result?.kind === 'validation'
+          ? 'PLEASE FIX THE HIGHLIGHTED FIELDS'
+          : 'WE COULDDN\'T COMPLETE THAT REQUEST';
+    const body = isRateLimited
+      ? 'Please wait a few minutes before trying again.'
+      : isNetwork
+        ? 'Check your network and try again.'
+        : result?.kind === 'validation'
+          ? (result as any).message ?? 'Please fix the highlighted fields.'
+          : (result as any)?.message ?? 'Please try again.';
+
     return (
       <div
         data-s6="terminal"
@@ -116,21 +174,23 @@ export default function DispatchTerminal({ onInteracted }: DispatchTerminalProps
           <span className="font-tech text-[10px] tracking-[0.18em] text-[var(--s6-muted-text)]">DISPATCH INTAKE</span>
           <span className="flex items-center gap-2 font-tech text-[10px] tracking-[0.14em] text-[var(--s6-error)]">
             <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-[var(--s6-error)]" />
-            ERROR
+            {isRateLimited ? 'RATE LIMITED' : 'ERROR'}
           </span>
         </div>
         <div className="flex flex-col items-center py-8 text-center">
           <h3 className="font-display text-[20px] font-semibold uppercase text-[var(--s6-error)]">
-            WE COULDN'T COMPLETE THAT REQUEST.
+            {headline}
           </h3>
-          <p className="mt-3 text-[13px] text-[var(--s6-muted-text)]">Please check your connection and try again.</p>
-          <button
-            type="button"
-            onClick={() => setStatus("idle")}
-            className="mt-6 inline-flex items-center gap-2 border border-[var(--s6-border-2)] px-5 py-3 text-[11px] font-semibold tracking-[0.16em] text-[var(--s6-warm-white)] transition-colors hover:border-[var(--s6-brass)]"
-          >
-            TRY AGAIN →
-          </button>
+          <p className="mt-3 text-[13px] text-[var(--s6-muted-text)]">{body}</p>
+          {!isRateLimited && (
+            <button
+              type="button"
+              onClick={resetToIdle}
+              className="mt-6 inline-flex items-center gap-2 border border-[var(--s6-border-2)] px-5 py-3 text-[11px] font-semibold tracking-[0.16em] text-[var(--s6-warm-white)] transition-colors hover:border-[var(--s6-brass)]"
+            >
+              TRY AGAIN →
+            </button>
+          )}
         </div>
       </div>
     );
@@ -139,41 +199,36 @@ export default function DispatchTerminal({ onInteracted }: DispatchTerminalProps
   /* ---- IDLE / SUBMITTING — the terminal ---- */
   return (
     <div data-s6="terminal" className="relative overflow-hidden rounded-[3px]">
-      {/* depth settle layer */}
       <div
         data-s6="depth"
         aria-hidden="true"
         className="absolute inset-0 rounded-[3px]"
-        style={{ boxShadow: "0 18px 50px rgba(0,0,0,0.35), inset 0 0 0 1px rgba(212,176,106,0.05)" }}
+        style={{ boxShadow: '0 18px 50px rgba(0,0,0,0.35), inset 0 0 0 1px rgba(212,176,106,0.05)' }}
       />
-      {/* terminal surface */}
       <div data-s6="terminal-bg" aria-hidden="true" className="absolute inset-0 rounded-[3px] bg-[var(--s6-graphite)]" />
-      {/* frame edges */}
       <span data-s6="frame-top" aria-hidden="true" className="s6-frame-edge absolute left-0 top-0 z-20 h-px w-full origin-left" />
       <span data-s6="frame-right" aria-hidden="true" className="s6-frame-edge absolute right-0 top-0 z-20 h-full w-px origin-top" />
       <span data-s6="frame-bottom" aria-hidden="true" className="s6-frame-edge absolute bottom-0 left-0 z-20 h-px w-full origin-left" />
       <span data-s6="frame-left" aria-hidden="true" className="s6-frame-edge absolute left-0 top-0 z-20 h-full w-px origin-top" />
-      {/* calibration sweep */}
       <span
         data-s6="calib"
         aria-hidden="true"
         className="pointer-events-none absolute inset-y-0 left-0 z-20 w-1/5 opacity-0"
-        style={{ background: "linear-gradient(90deg, transparent, rgba(212,176,106,0.08), transparent)" }}
+        style={{ background: 'linear-gradient(90deg, transparent, rgba(212,176,106,0.08), transparent)' }}
       />
 
       <div className="relative z-10 p-6 lg:p-8">
-        {/* terminal header */}
         <div className="flex items-center justify-between">
           <span className="font-tech text-[10px] tracking-[0.18em] text-[var(--s6-muted-text)]">DISPATCH INTAKE</span>
           <div className="flex items-center gap-4">
             <span data-s6="status-line" className="font-tech text-[9px] tracking-[0.12em] text-[var(--s6-muted-text)]">
-              {String(validCount).padStart(2, "0")} / {String(requiredCount).padStart(2, "0")}
+              {String(validCount).padStart(2, '0')} / {String(requiredCount).padStart(2, '0')}
             </span>
             <span data-s6="status-cluster" className="flex items-center gap-2 font-tech text-[10px] tracking-[0.14em] text-[var(--s6-champagne)]">
               <span
                 data-s6="status-dot"
                 aria-hidden="true"
-                className={`h-1.5 w-1.5 rounded-full ${isReady ? "bg-[var(--s6-success)]" : "bg-[var(--s6-champagne)]"}`}
+                className={`h-1.5 w-1.5 rounded-full ${isReady ? 'bg-[var(--s6-success)]' : 'bg-[var(--s6-champagne)]'}`}
               />
               {statusLabel}
             </span>
@@ -181,7 +236,6 @@ export default function DispatchTerminal({ onInteracted }: DispatchTerminalProps
         </div>
         <div data-s6="header-divider" aria-hidden="true" className="mt-4 h-px w-full origin-left bg-[var(--s6-border)]" />
 
-        {/* form */}
         <form className="mt-6" onSubmit={handleSubmit} onFocus={() => onInteracted?.()} noValidate>
           <div className="grid gap-4 sm:grid-cols-2">
             {FIELD_CONFIGS.map((config) => {
@@ -189,25 +243,25 @@ export default function DispatchTerminal({ onInteracted }: DispatchTerminalProps
               const required = isFieldRequired(config, formData);
               const placeholder = config.dynamicPlaceholder ? config.dynamicPlaceholder(formData) : config.placeholder;
               const isConditional = !!config.showWhen;
+              const serverError = fieldErrors[config.key];
               return (
                 <div
                   key={config.key}
-                  className={`${config.fullWidth ? "sm:col-span-2" : ""} ${isConditional ? "s6-conditional" : ""}`}
+                  className={`${config.fullWidth ? 'sm:col-span-2' : ''} ${isConditional ? 's6-conditional' : ''}`}
                 >
                   <DispatchField
                     config={config}
-                    value={formData[config.key]}
-                    touched={!!touched[config.key]}
+                    value={formData[config.key] as string}
+                    touched={!!touched[config.key] || !!serverError}
                     required={required}
                     placeholder={placeholder}
                     onChange={handleChange}
                     onBlur={handleBlur}
+                    serverError={serverError}
                   />
                 </div>
               );
             })}
-
-            {/* Message — full width, optional */}
             <div data-s6-group="B" className="sm:col-span-2">
               <label
                 htmlFor="dispatch-message"
@@ -221,45 +275,47 @@ export default function DispatchTerminal({ onInteracted }: DispatchTerminalProps
                 rows={3}
                 placeholder="Tell us more..."
                 value={formData.message}
-                onChange={(e) => handleChange("message", e.target.value)}
+                onChange={(e) => handleChange('message', e.target.value)}
                 className="w-full resize-none rounded-[2px] border border-[var(--s6-border)] bg-[var(--s6-raised)] px-3 py-2.5 text-[13px] text-[var(--s6-warm-white)] placeholder:text-[var(--s6-muted-text)]/60 transition-colors duration-200 focus:border-[var(--s6-brass)] focus:outline-none"
               />
             </div>
           </div>
 
-          {/* consent */}
           <div data-s6="consent" className="mt-5">
             <label className="flex cursor-pointer items-start gap-3">
               <input
                 type="checkbox"
                 checked={formData.consent}
-                onChange={(e) => handleChange("consent", e.target.checked)}
-                onBlur={() => handleBlur("consent")}
+                onChange={(e) => handleChange('consent', e.target.checked)}
+                onBlur={() => handleBlur('consent')}
                 className="mt-0.5 h-4 w-4 shrink-0 rounded-[2px] border border-[var(--s6-border-2)] bg-[var(--s6-raised)] accent-[var(--s6-brass)]"
-                aria-invalid={touched.consent && !formData.consent}
+                aria-invalid={(touched.consent && !formData.consent) || !!fieldErrors.consent}
               />
               <span className="text-[11px] leading-relaxed text-[var(--s6-muted-text)]">
                 I agree to the Privacy Policy and consent to being contacted.
               </span>
             </label>
-            {touched.consent && !formData.consent && (
+            {fieldErrors.consent && (
+              <p className="mt-1 text-[10px] text-[var(--s6-error)]" role="alert">
+                {fieldErrors.consent}
+              </p>
+            )}
+            {touched.consent && !formData.consent && !fieldErrors.consent && (
               <p className="mt-1 text-[10px] text-[var(--s6-error)]" role="alert">
                 Consent is required
               </p>
             )}
           </div>
 
-          {/* CTA */}
           <div data-s6="cta-row" className="mt-6">
             <button
               type="submit"
-              disabled={status === "submitting"}
+              disabled={status === 'submitting'}
               className="group/cta relative w-full overflow-hidden rounded-[2px] bg-[var(--s6-champagne)] px-6 py-3.5 text-[12px] font-semibold tracking-[0.16em] text-[#111820] transition-colors duration-200 hover:bg-[var(--s6-brass)] disabled:cursor-not-allowed disabled:opacity-70"
             >
               <span aria-hidden="true" className="s6-cta-sweep pointer-events-none absolute inset-0" />
-              <span aria-hidden="true" className={`s6-shimmer pointer-events-none absolute inset-0 overflow-hidden ${shimmer ? "play" : ""}`} />
-
-              {status === "submitting" ? (
+              <span aria-hidden="true" className={`s6-shimmer pointer-events-none absolute inset-0 overflow-hidden ${shimmer ? 'play' : ''}`} />
+              {status === 'submitting' ? (
                 <span className="relative flex items-center justify-center gap-3">
                   <span className="s6-submit-track relative h-[2px] w-16 overflow-hidden rounded-full">
                     <span className="s6-submit-signal absolute inset-y-0 left-0 w-1/4 rounded-full" />

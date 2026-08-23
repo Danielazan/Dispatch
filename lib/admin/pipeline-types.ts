@@ -68,3 +68,6 @@ export interface PipelineSnapshot {
   bottlenecks: BottleneckRow[];
   details: Record<string, CarrierPipelineDetail>;
 }
+/* ============ pipeline-types v2 append (production build fix) ============ */
+export interface Paged<T> { items: T[]; page: number; pageSize: number; totalItems: number; totalPages: number; }
+export interface VerificationRow { id: string; mcNumber: string; carrierName: string; stage: 'Insurance' | 'Authority' | 'Safety'; submittedAt: string; priority: 'high' | 'medium' | 'low'; }

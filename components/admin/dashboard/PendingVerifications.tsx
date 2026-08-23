@@ -53,7 +53,7 @@ export function PendingVerifications({ data }: { data: Paged<VerificationRow> })
                 <td className="tnum px-5 py-3 text-[var(--adm-t2)]">{row.mcNumber}</td>
                 <td className="px-3 py-3 font-medium text-[var(--adm-t1)]">{row.carrierName}</td>
                 <td className="px-3 py-3">
-                  <span className="rounded-md px-2.5 py-1 text-[10.5px] font-semibold" style={STAGE_STYLE[row.stage]}>
+                  <span className="rounded-md px-2.5 py-1 text-[10.5px] font-semibold" style={{ background: STAGE_STYLE[row.stage].bg, color: STAGE_STYLE[row.stage].fg }}>
                     {row.stage}
                   </span>
                 </td>

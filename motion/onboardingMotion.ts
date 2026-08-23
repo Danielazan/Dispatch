@@ -5,8 +5,8 @@ export const motionTokens = {
   distance: { sm: 2, md: 4, lg: 8, xl: 14, xxl: 18 },
   duration: { micro: 0.12, short: 0.22, med: 0.42, long: 0.72, xl: 0.98, wake: 1.6 },
   easing: {
-    precision: [0.22, 1, 0.36, 1] as string,
-    transfer: [0.65, 0, 0.35, 1] as string,
+    precision: [0.22, 1, 0.36, 1] as readonly number[],
+    transfer: [0.65, 0, 0.35, 1] as readonly number[],
   },
 };
 

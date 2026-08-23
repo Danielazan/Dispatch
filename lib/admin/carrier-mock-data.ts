@@ -31,6 +31,9 @@ export function getLatestAgreement(f: CarrierFile): AgreementRecord | null {
 
 const TITAN: CarrierFile = {
   id: 'submitted-1',
+  createdAt: '2025-05-20T14:14:00.000Z',
+  updatedAt: '2025-05-20T15:02:00.000Z',
+  onboardingSessionId: 'obs-titan-1',
   legalName: 'Titan Freight Systems',
   dbaName: 'Titan Freight Systems',
   authorityNumber: 'MC# 2345678',
@@ -45,12 +48,12 @@ const TITAN: CarrierFile = {
   verificationStatus: 'manual_pending',
   agreementStatus: 'signed',
   rejectReason: null,
-  submittedAt: 'May 20, 2025 • 2:14 PM',
+  
   documents: [
-    { id: 'doc-t1', documentType: 'mc_authority_letter', originalFilename: 'titan-mc-letter.pdf', reviewStatus: 'accepted', reviewNotes: null, uploadedAt: 'May 20, 2025 • 2:20 PM' },
-    { id: 'doc-t2', documentType: 'certificate_of_insurance', originalFilename: 'titan-coi.pdf', reviewStatus: 'pending', reviewNotes: null, uploadedAt: 'May 20, 2025 • 2:24 PM' },
-    { id: 'doc-t3', documentType: 'w9_or_w8bene', originalFilename: 'titan-w9.pdf', reviewStatus: 'rejected', reviewNotes: 'W-9 signature missing — re-upload a signed copy.', uploadedAt: 'May 20, 2025 • 2:27 PM' },
-    { id: 'doc-t4', documentType: 'noa', originalFilename: 'titan-noa.pdf', reviewStatus: 'pending', reviewNotes: null, uploadedAt: 'May 20, 2025 • 2:30 PM' },
+    { id: 'doc-t1', documentType: 'mc_authority_letter', reviewStatus: 'accepted', reviewNotes: null } as unknown as CarrierDocument,
+    { id: 'doc-t2', documentType: 'certificate_of_insurance', reviewStatus: 'pending', reviewNotes: null } as unknown as CarrierDocument,
+    { id: 'doc-t3', documentType: 'w9_or_w8bene', reviewStatus: 'rejected', reviewNotes: 'W-9 signature missing — re-upload a signed copy.' } as unknown as CarrierDocument,
+    { id: 'doc-t4', documentType: 'noa', reviewStatus: 'pending', reviewNotes: null } as unknown as CarrierDocument,
   ],
   verificationResults: [
     { id: 'vr-t1', method: 'format_check', inputNumber: 'MC# 2345678', inputCountry: 'USA', resultStatus: 'manual_pending', reviewedByAdminId: null, createdAt: 'May 20, 2025 • 2:15 PM' },
@@ -58,7 +61,7 @@ const TITAN: CarrierFile = {
   agreements: [
     { id: 'ag-t1', method: 'custom_capture', status: 'signed', signerName: 'James Peterson', signedAt: 'May 20, 2025 • 3:02 PM', consentTextShown: 'PLACEHOLDER LEGAL TEXT — not final (Decision 32).', createdAt: 'May 20, 2025 • 3:02 PM' },
   ],
-  onboardingSession: { lead: { id: 'LD-2025-05120', email: 'james@titanfreight.com', status: 'onboarding_submitted' } },
+  onboardingSession: { id: 'obs-titan-1', lead: { id: 'LD-2025-05120', email: 'james@titanfreight.com', status: 'onboarding_submitted' } },
 };
 
 function fallbackFile(id: string): CarrierFile {
@@ -67,6 +70,9 @@ function fallbackFile(id: string): CarrierFile {
   const name = names[n % names.length];
   return {
     id,
+    createdAt: '2025-05-19T16:22:00.000Z',
+    updatedAt: '2025-05-19T16:33:00.000Z',
+    onboardingSessionId: 'obs-fallback-1',
     legalName: name, dbaName: name,
     authorityNumber: `MC# ${2000000 + n * 137}`, dotNumber: `${1000000 + n * 91}`, ein: `12-${3456780 + n}`,
     address: '400 Freight Way, Dallas, TX 75201', phone: `(312) 555-01${String(10 + n).slice(-2)}`,
@@ -76,10 +82,10 @@ function fallbackFile(id: string): CarrierFile {
     verificationStatus: 'manual_pending',
     agreementStatus: 'sent', // deliberately NOT signed → demos the second blocking precondition
     rejectReason: null,
-    submittedAt: 'May 19, 2025 • 4:22 PM',
+    
     documents: [
-      { id: `doc-${id}-1`, documentType: 'mc_authority_letter', originalFilename: 'mc-letter.pdf', reviewStatus: 'pending', reviewNotes: null, uploadedAt: 'May 19, 2025 • 4:30 PM' },
-      { id: `doc-${id}-2`, documentType: 'certificate_of_insurance', originalFilename: 'coi.pdf', reviewStatus: 'pending', reviewNotes: null, uploadedAt: 'May 19, 2025 • 4:33 PM' },
+      { id: `doc-${id}-1`, documentType: 'mc_authority_letter', reviewStatus: 'pending', reviewNotes: null } as unknown as CarrierDocument,
+      { id: `doc-${id}-2`, documentType: 'certificate_of_insurance', reviewStatus: 'pending', reviewNotes: null } as unknown as CarrierDocument,
     ],
     verificationResults: [
       { id: `vr-${id}-1`, method: 'format_check', inputNumber: `MC# ${2000000 + n * 137}`, inputCountry: 'USA', resultStatus: 'manual_pending', reviewedByAdminId: null, createdAt: 'May 19, 2025 • 4:23 PM' },
@@ -87,7 +93,7 @@ function fallbackFile(id: string): CarrierFile {
     agreements: [
       { id: `ag-${id}-1`, method: 'custom_capture', status: 'sent', signerName: null, signedAt: null, consentTextShown: 'PLACEHOLDER LEGAL TEXT — not final (Decision 32).', createdAt: 'May 19, 2025 • 4:23 PM' },
     ],
-    onboardingSession: { lead: { id: `LD-2025-051${20 + n}`, email: `dispatch@${name.toLowerCase().replace(/[^a-z]+/g, '').slice(0, 12)}.com`, status: 'onboarding_submitted' } },
+    onboardingSession: { id: `obs-${id}`, lead: { id: `LD-2025-051${20 + n}`, email: `dispatch@${name.toLowerCase().replace(/[^a-z]+/g, '').slice(0, 12)}.com`, status: 'onboarding_submitted' } },
   };
 }
 
@@ -152,7 +158,7 @@ export const carrierActions = {
     if (!f) throw new CarrierApiError(404, 'record_not_found', 'Carrier not found.');
     if (f.status !== 'approved') throw new CarrierApiError(409, 'activation_blocked', `Activation blocked: carrier status is ${f.status}, not approved.`);
     f.status = 'active';
-    if (f.onboardingSession) f.onboardingSession.lead.status = 'converted'; // Decision 16
+    if (f.onboardingSession?.lead) f.onboardingSession.lead.status = 'converted'; // Decision 16
     return { carrier: { ...f } };
   },
 

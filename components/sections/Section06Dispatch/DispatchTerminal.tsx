@@ -147,22 +147,23 @@ export default function DispatchTerminal({ onInteracted }: DispatchTerminalProps
 
   /* ---- ERROR ---- */
   if (status === 'error') {
-    const isRateLimited = result?.kind === 'rate_limited';
-    const isNetwork = result?.kind === 'network';
+    const failure = result && !result.success ? result : null;
+    const isRateLimited = failure?.kind === 'rate_limited';
+    const isNetwork = failure?.kind === 'network';
     const headline = isRateLimited
       ? 'TOO MANY SUBMISSIONS'
       : isNetwork
         ? 'CONNECTION PROBLEM'
-        : result?.kind === 'validation'
+        : failure?.kind === 'validation'
           ? 'PLEASE FIX THE HIGHLIGHTED FIELDS'
           : 'WE COULDDN\'T COMPLETE THAT REQUEST';
     const body = isRateLimited
       ? 'Please wait a few minutes before trying again.'
       : isNetwork
         ? 'Check your network and try again.'
-        : result?.kind === 'validation'
-          ? (result as any).message ?? 'Please fix the highlighted fields.'
-          : (result as any)?.message ?? 'Please try again.';
+        : failure?.kind === 'validation'
+          ? failure.message ?? 'Please fix the highlighted fields.'
+          : failure?.message ?? 'Please try again.';
 
     return (
       <div

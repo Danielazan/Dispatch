@@ -84,7 +84,7 @@ export function PipelinePage() {
           </>
         )}
       </div>
-      {detail && <CarrierDetailDrawer detail={detail} demo onClose={() => setDetail(null)} />}
+      {detail && <CarrierDetailDrawer detail={detail} onClose={() => setDetail(null)} />}
     </div>
   );
 }

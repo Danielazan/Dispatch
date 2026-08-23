@@ -1,0 +1,531 @@
+﻿{
+    "success":  true,
+    "data":  {
+                 "items":  [
+                               {
+                                   "id":  "78125ae2-eea6-4a22-99ec-9702954e5c19",
+                                   "onboardingSessionId":  "77f5151f-5e31-4994-9aaf-faf86dd928b0",
+                                   "legalName":  "E2E Legal LLC",
+                                   "dbaName":  null,
+                                   "authorityNumber":  "MC778899",
+                                   "dotNumber":  "7788991",
+                                   "ein":  "12-3456780",
+                                   "address":  "1 Evidence Way",
+                                   "phone":  "555-0199",
+                                   "email":  "e2e-20260823040619@example.com",
+                                   "paymentPreference":  "QuickPay",
+                                   "factoringCompanyName":  null,
+                                   "status":  "admin_review",
+                                   "verificationStatus":  "manual_pending",
+                                   "agreementStatus":  "signed",
+                                   "createdAt":  "2026-08-23T03:06:26.296Z",
+                                   "updatedAt":  "2026-08-23T03:06:27.535Z",
+                                   "onboardingSession":  {
+                                                             "lead":  {
+                                                                          "companyName":  "E2E Evidence Co",
+                                                                          "contactName":  "Evi Dent",
+                                                                          "email":  "e2e-20260823040619@example.com"
+                                                                      }
+                                                         }
+                               },
+                               {
+                                   "id":  "7449f047-35db-4b99-9277-0d1d5725f118",
+                                   "onboardingSessionId":  "f50e9e1d-6c47-457c-96eb-e89ec10f827b",
+                                   "legalName":  null,
+                                   "dbaName":  null,
+                                   "authorityNumber":  null,
+                                   "dotNumber":  null,
+                                   "ein":  null,
+                                   "address":  null,
+                                   "phone":  null,
+                                   "email":  null,
+                                   "paymentPreference":  "QuickPay",
+                                   "factoringCompanyName":  null,
+                                   "status":  "draft",
+                                   "verificationStatus":  "pending",
+                                   "agreementStatus":  "pending",
+                                   "createdAt":  "2026-08-22T02:14:34.103Z",
+                                   "updatedAt":  "2026-08-22T03:08:51.338Z",
+                                   "onboardingSession":  {
+                                                             "lead":  {
+                                                                          "companyName":  "Stage10 Carrier Co",
+                                                                          "contactName":  "John Doe",
+                                                                          "email":  "stage10@exampl91.com"
+                                                                      }
+                                                         }
+                               },
+                               {
+                                   "id":  "4e9c045f-cbf2-40c9-9942-a9d5b1608d1c",
+                                   "onboardingSessionId":  "08e06c4a-c894-4ca2-9555-d371eae2c7f7",
+                                   "legalName":  "Francis",
+                                   "dbaName":  "DAN",
+                                   "authorityNumber":  "3245232",
+                                   "dotNumber":  "2435352",
+                                   "ein":  "463434",
+                                   "address":  "3424",
+                                   "phone":  "800",
+                                   "email":  "onyijodan@gmail.com",
+                                   "paymentPreference":  null,
+                                   "factoringCompanyName":  null,
+                                   "status":  "draft",
+                                   "verificationStatus":  "pending",
+                                   "agreementStatus":  "pending",
+                                   "createdAt":  "2026-08-21T15:52:28.884Z",
+                                   "updatedAt":  "2026-08-21T15:52:28.884Z",
+                                   "onboardingSession":  {
+                                                             "lead":  {
+                                                                          "companyName":  "Stage10 Carrier Co",
+                                                                          "contactName":  "John Doe",
+                                                                          "email":  "danfrancix@gmail.com"
+                                                                      }
+                                                         }
+                               },
+                               {
+                                   "id":  "e27b0b3d-9407-44c9-b050-8124e8c53d43",
+                                   "onboardingSessionId":  "891207df-0824-4083-bbd1-4ed35eb7a382",
+                                   "legalName":  "Stage10 Legal LLC",
+                                   "dbaName":  null,
+                                   "authorityNumber":  "MC123456",
+                                   "dotNumber":  "1234567",
+                                   "ein":  "12-3456789",
+                                   "address":  "123 Road St",
+                                   "phone":  "555-0100",
+                                   "email":  "stage10@example.com",
+                                   "paymentPreference":  "Direct Deposit",
+                                   "factoringCompanyName":  null,
+                                   "status":  "rejected",
+                                   "verificationStatus":  "admin_confirmed",
+                                   "agreementStatus":  "signed",
+                                   "createdAt":  "2026-08-21T13:16:12.649Z",
+                                   "updatedAt":  "2026-08-21T13:16:16.910Z",
+                                   "onboardingSession":  {
+                                                             "lead":  {
+                                                                          "companyName":  "Stage10 Carrier Co",
+                                                                          "contactName":  "John Doe",
+                                                                          "email":  "stage10@example.com"
+                                                                      }
+                                                         }
+                               },
+                               {
+                                   "id":  "a2ebcab7-d8f0-4d0f-bf90-1960b3000a68",
+                                   "onboardingSessionId":  "9173f2b6-cee1-4e1b-a438-6cc53db7891e",
+                                   "legalName":  "Stage10 Legal LLC",
+                                   "dbaName":  null,
+                                   "authorityNumber":  "MC123456",
+                                   "dotNumber":  "1234567",
+                                   "ein":  "12-3456789",
+                                   "address":  "123 Road St",
+                                   "phone":  "555-0100",
+                                   "email":  "stage10@example.com",
+                                   "paymentPreference":  "Direct Deposit",
+                                   "factoringCompanyName":  null,
+                                   "status":  "rejected",
+                                   "verificationStatus":  "admin_confirmed",
+                                   "agreementStatus":  "signed",
+                                   "createdAt":  "2026-08-21T12:10:19.366Z",
+                                   "updatedAt":  "2026-08-21T12:10:24.047Z",
+                                   "onboardingSession":  {
+                                                             "lead":  {
+                                                                          "companyName":  "Stage10 Carrier Co",
+                                                                          "contactName":  "John Doe",
+                                                                          "email":  "preciouxque567@gmail.com"
+                                                                      }
+                                                         }
+                               },
+                               {
+                                   "id":  "1d7949bc-b067-4181-ac2f-20f513093380",
+                                   "onboardingSessionId":  "832cea65-a915-40a0-a81f-51be8f7156ff",
+                                   "legalName":  "Stage10 Legal LLC",
+                                   "dbaName":  null,
+                                   "authorityNumber":  "MC123456",
+                                   "dotNumber":  "1234567",
+                                   "ein":  "12-3456789",
+                                   "address":  "123 Road St",
+                                   "phone":  "555-0100",
+                                   "email":  "stage10@example.com",
+                                   "paymentPreference":  "Direct Deposit",
+                                   "factoringCompanyName":  null,
+                                   "status":  "rejected",
+                                   "verificationStatus":  "admin_confirmed",
+                                   "agreementStatus":  "signed",
+                                   "createdAt":  "2026-08-20T22:32:17.915Z",
+                                   "updatedAt":  "2026-08-20T22:32:23.130Z",
+                                   "onboardingSession":  {
+                                                             "lead":  {
+                                                                          "companyName":  "Stage10 Carrier Co",
+                                                                          "contactName":  "John Doe",
+                                                                          "email":  "stage10@example.com"
+                                                                      }
+                                                         }
+                               },
+                               {
+                                   "id":  "34d31ae7-3370-4de7-9e0b-79ea60becebf",
+                                   "onboardingSessionId":  "f478e89c-926a-4615-b1a8-f865632fd438",
+                                   "legalName":  "Stage10 Legal LLC",
+                                   "dbaName":  null,
+                                   "authorityNumber":  "MC123456",
+                                   "dotNumber":  "1234567",
+                                   "ein":  "12-3456789",
+                                   "address":  "123 Road St",
+                                   "phone":  "555-0100",
+                                   "email":  "stage10@example.com",
+                                   "paymentPreference":  "Direct Deposit",
+                                   "factoringCompanyName":  null,
+                                   "status":  "rejected",
+                                   "verificationStatus":  "admin_confirmed",
+                                   "agreementStatus":  "signed",
+                                   "createdAt":  "2026-08-20T22:16:48.218Z",
+                                   "updatedAt":  "2026-08-20T22:16:53.630Z",
+                                   "onboardingSession":  {
+                                                             "lead":  {
+                                                                          "companyName":  "Stage10 Carrier Co",
+                                                                          "contactName":  "John Doe",
+                                                                          "email":  "stage10@example.com"
+                                                                      }
+                                                         }
+                               },
+                               {
+                                   "id":  "a61c6f0b-0814-4c30-a366-ea04f3f5f614",
+                                   "onboardingSessionId":  "79120181-2772-44fc-a6da-b9b2da8cde7c",
+                                   "legalName":  "Stage10 Legal LLC",
+                                   "dbaName":  null,
+                                   "authorityNumber":  "MC123456",
+                                   "dotNumber":  "1234567",
+                                   "ein":  "12-3456789",
+                                   "address":  "123 Road St",
+                                   "phone":  "555-0100",
+                                   "email":  "stage10@example.com",
+                                   "paymentPreference":  "Direct Deposit",
+                                   "factoringCompanyName":  null,
+                                   "status":  "rejected",
+                                   "verificationStatus":  "admin_confirmed",
+                                   "agreementStatus":  "signed",
+                                   "createdAt":  "2026-08-20T15:43:47.395Z",
+                                   "updatedAt":  "2026-08-20T15:43:51.620Z",
+                                   "onboardingSession":  {
+                                                             "lead":  {
+                                                                          "companyName":  "Stage10 Carrier Co",
+                                                                          "contactName":  "John Doe",
+                                                                          "email":  "stage10@example.com"
+                                                                      }
+                                                         }
+                               },
+                               {
+                                   "id":  "aa1143f9-1449-49de-bb32-b6bddcad4a88",
+                                   "onboardingSessionId":  "e83e52ba-ceb9-468f-af1a-f127021217a1",
+                                   "legalName":  "Stage10 Legal LLC",
+                                   "dbaName":  null,
+                                   "authorityNumber":  "MC123456",
+                                   "dotNumber":  "1234567",
+                                   "ein":  "12-3456789",
+                                   "address":  "123 Road St",
+                                   "phone":  "555-0100",
+                                   "email":  "stage10@example.com",
+                                   "paymentPreference":  "Direct Deposit",
+                                   "factoringCompanyName":  null,
+                                   "status":  "rejected",
+                                   "verificationStatus":  "admin_confirmed",
+                                   "agreementStatus":  "signed",
+                                   "createdAt":  "2026-08-20T14:16:26.395Z",
+                                   "updatedAt":  "2026-08-20T14:36:03.855Z",
+                                   "onboardingSession":  {
+                                                             "lead":  {
+                                                                          "companyName":  "Stage10 Carrier Co",
+                                                                          "contactName":  "John Doe",
+                                                                          "email":  "stage10@example.com"
+                                                                      }
+                                                         }
+                               },
+                               {
+                                   "id":  "395efa3b-f903-411b-bd11-1cba93783e73",
+                                   "onboardingSessionId":  "94816746-3d9f-452b-a405-73aa3f683cee",
+                                   "legalName":  "Stage10 Legal LLC",
+                                   "dbaName":  null,
+                                   "authorityNumber":  "MC123456",
+                                   "dotNumber":  "1234567",
+                                   "ein":  "12-3456789",
+                                   "address":  "123 Road St",
+                                   "phone":  "555-0100",
+                                   "email":  "stage10@example.com",
+                                   "paymentPreference":  "Direct Deposit",
+                                   "factoringCompanyName":  null,
+                                   "status":  "admin_review",
+                                   "verificationStatus":  "admin_confirmed",
+                                   "agreementStatus":  "sent",
+                                   "createdAt":  "2026-08-20T14:02:59.120Z",
+                                   "updatedAt":  "2026-08-20T14:03:03.378Z",
+                                   "onboardingSession":  {
+                                                             "lead":  {
+                                                                          "companyName":  "Stage10 Carrier Co",
+                                                                          "contactName":  "John Doe",
+                                                                          "email":  "stage10@example.com"
+                                                                      }
+                                                         }
+                               },
+                               {
+                                   "id":  "e1c1ce45-8cd1-471d-92cc-fdd6d0a702b6",
+                                   "onboardingSessionId":  "45a8aa17-b77b-4c52-814f-3b28f1917452",
+                                   "legalName":  "Stage11 Legal LLC",
+                                   "dbaName":  null,
+                                   "authorityNumber":  "MC123456",
+                                   "dotNumber":  "1234567",
+                                   "ein":  "12-3456789",
+                                   "address":  "123 Road St",
+                                   "phone":  "555-0100",
+                                   "email":  "stage11@example.com",
+                                   "paymentPreference":  "Direct Deposit",
+                                   "factoringCompanyName":  null,
+                                   "status":  "active",
+                                   "verificationStatus":  "admin_confirmed",
+                                   "agreementStatus":  "signed",
+                                   "createdAt":  "2026-08-20T13:49:28.736Z",
+                                   "updatedAt":  "2026-08-20T13:49:31.843Z",
+                                   "onboardingSession":  {
+                                                             "lead":  {
+                                                                          "companyName":  "Stage11 Carrier Co",
+                                                                          "contactName":  "John Doe",
+                                                                          "email":  "stage11@example.com"
+                                                                      }
+                                                         }
+                               },
+                               {
+                                   "id":  "2fc93378-6380-4ca0-9bb9-0204cb85e570",
+                                   "onboardingSessionId":  "38e5eb83-653c-4e98-bb45-03eac5b58719",
+                                   "legalName":  "Stage10 Legal LLC",
+                                   "dbaName":  null,
+                                   "authorityNumber":  "MC123456",
+                                   "dotNumber":  "1234567",
+                                   "ein":  "12-3456789",
+                                   "address":  "123 Road St",
+                                   "phone":  "555-0100",
+                                   "email":  "stage10@example.com",
+                                   "paymentPreference":  "Direct Deposit",
+                                   "factoringCompanyName":  null,
+                                   "status":  "admin_review",
+                                   "verificationStatus":  "admin_confirmed",
+                                   "agreementStatus":  "signed",
+                                   "createdAt":  "2026-08-19T22:42:14.457Z",
+                                   "updatedAt":  "2026-08-19T22:42:17.483Z",
+                                   "onboardingSession":  {
+                                                             "lead":  {
+                                                                          "companyName":  "Stage10 Carrier Co",
+                                                                          "contactName":  "John Doe",
+                                                                          "email":  "stage10@example.com"
+                                                                      }
+                                                         }
+                               },
+                               {
+                                   "id":  "239af48f-03c6-4ab6-9907-e9f372369b90",
+                                   "onboardingSessionId":  "21e500d1-3ae9-44b8-a10d-a19578ab6411",
+                                   "legalName":  "Stage10 Legal LLC",
+                                   "dbaName":  null,
+                                   "authorityNumber":  "MC123456",
+                                   "dotNumber":  "1234567",
+                                   "ein":  "12-3456789",
+                                   "address":  "123 Road St",
+                                   "phone":  "555-0100",
+                                   "email":  "stage10@example.com",
+                                   "paymentPreference":  "Direct Deposit",
+                                   "factoringCompanyName":  null,
+                                   "status":  "admin_review",
+                                   "verificationStatus":  "admin_confirmed",
+                                   "agreementStatus":  "signed",
+                                   "createdAt":  "2026-08-19T22:03:51.283Z",
+                                   "updatedAt":  "2026-08-19T22:03:54.157Z",
+                                   "onboardingSession":  {
+                                                             "lead":  {
+                                                                          "companyName":  "Stage10 Carrier Co",
+                                                                          "contactName":  "John Doe",
+                                                                          "email":  "stage10@example.com"
+                                                                      }
+                                                         }
+                               },
+                               {
+                                   "id":  "17613a64-a66c-4997-955e-64c7069fd9ea",
+                                   "onboardingSessionId":  "56b543f8-f9e5-4373-a64f-e0b1b1968580",
+                                   "legalName":  "Iron Dispatch LLC",
+                                   "dbaName":  "Iron Dispatch",
+                                   "authorityNumber":  "MC123456",
+                                   "dotNumber":  "1234567",
+                                   "ein":  "12-3456789",
+                                   "address":  "123 Main St, Springfield, IL",
+                                   "phone":  "555-0198",
+                                   "email":  "jane.doe@example.com",
+                                   "paymentPreference":  "Freight Factoring",
+                                   "factoringCompanyName":  "Example Factoring Co",
+                                   "status":  "admin_review",
+                                   "verificationStatus":  "admin_confirmed",
+                                   "agreementStatus":  "sent",
+                                   "createdAt":  "2026-08-19T18:29:24.375Z",
+                                   "updatedAt":  "2026-08-19T18:29:27.812Z",
+                                   "onboardingSession":  {
+                                                             "lead":  {
+                                                                          "companyName":  "Iron Dispatch LLC",
+                                                                          "contactName":  "Jane Doe",
+                                                                          "email":  "jane.doe@example.com"
+                                                                      }
+                                                         }
+                               },
+                               {
+                                   "id":  "fb328f1f-8a26-4512-b132-10cdb4bca739",
+                                   "onboardingSessionId":  "b26903ba-6362-423f-919f-ac96fb283463",
+                                   "legalName":  "Iron Dispatch LLC",
+                                   "dbaName":  "Iron Dispatch",
+                                   "authorityNumber":  "MC123456",
+                                   "dotNumber":  "1234567",
+                                   "ein":  "12-3456789",
+                                   "address":  "123 Main St, Springfield, IL",
+                                   "phone":  "555-0198",
+                                   "email":  "jane.doe@example.com",
+                                   "paymentPreference":  "Freight Factoring",
+                                   "factoringCompanyName":  "Example Factoring Co",
+                                   "status":  "admin_review",
+                                   "verificationStatus":  "pending",
+                                   "agreementStatus":  "sent",
+                                   "createdAt":  "2026-08-19T17:36:47.416Z",
+                                   "updatedAt":  "2026-08-19T17:36:50.011Z",
+                                   "onboardingSession":  {
+                                                             "lead":  {
+                                                                          "companyName":  "Iron Dispatch LLC",
+                                                                          "contactName":  "Jane Doe",
+                                                                          "email":  "jane.doe@example.com"
+                                                                      }
+                                                         }
+                               },
+                               {
+                                   "id":  "e4122e8f-5e89-4dc4-be48-364ef1bcaad5",
+                                   "onboardingSessionId":  "34144cbf-9dc4-4e62-af8f-698c72fcb565",
+                                   "legalName":  "Iron Dispatch LLC",
+                                   "dbaName":  "Iron Dispatch",
+                                   "authorityNumber":  "MC123456",
+                                   "dotNumber":  "1234567",
+                                   "ein":  "12-3456789",
+                                   "address":  "123 Main St, Springfield, IL",
+                                   "phone":  "555-0198",
+                                   "email":  "jane.doe@example.com",
+                                   "paymentPreference":  "Freight Factoring",
+                                   "factoringCompanyName":  "Example Factoring Co",
+                                   "status":  "admin_review",
+                                   "verificationStatus":  "pending",
+                                   "agreementStatus":  "sent",
+                                   "createdAt":  "2026-08-19T16:58:20.093Z",
+                                   "updatedAt":  "2026-08-19T16:58:22.252Z",
+                                   "onboardingSession":  {
+                                                             "lead":  {
+                                                                          "companyName":  "Iron Dispatch LLC",
+                                                                          "contactName":  "Jane Doe",
+                                                                          "email":  "danfrancix@gmail.com"
+                                                                      }
+                                                         }
+                               },
+                               {
+                                   "id":  "f920b3a3-e8b2-461d-890e-a66f8f23649a",
+                                   "onboardingSessionId":  "f0057708-8864-44a9-be77-298fee0d4645",
+                                   "legalName":  "Iron Dispatch LLC",
+                                   "dbaName":  "Iron Dispatch",
+                                   "authorityNumber":  "MC123456",
+                                   "dotNumber":  "1234567",
+                                   "ein":  "12-3456789",
+                                   "address":  "123 Main St, Springfield, IL",
+                                   "phone":  "555-0198",
+                                   "email":  "jane.doe@example.com",
+                                   "paymentPreference":  "Freight Factoring",
+                                   "factoringCompanyName":  "Example Factoring Co",
+                                   "status":  "admin_review",
+                                   "verificationStatus":  "pending",
+                                   "agreementStatus":  "sent",
+                                   "createdAt":  "2026-08-19T16:30:01.275Z",
+                                   "updatedAt":  "2026-08-19T16:30:03.392Z",
+                                   "onboardingSession":  {
+                                                             "lead":  {
+                                                                          "companyName":  "Iron Dispatch LLC",
+                                                                          "contactName":  "Jane Doe",
+                                                                          "email":  "jane.doe@example.com"
+                                                                      }
+                                                         }
+                               },
+                               {
+                                   "id":  "25f17249-89f9-4816-b35c-339d6dc545c3",
+                                   "onboardingSessionId":  "05bc29b2-c652-46e9-8c2e-46a357da83cb",
+                                   "legalName":  "Iron Dispatch LLC",
+                                   "dbaName":  "Iron Dispatch",
+                                   "authorityNumber":  "MC123456",
+                                   "dotNumber":  "1234567",
+                                   "ein":  "12-3456789",
+                                   "address":  "123 Main St, Springfield, IL",
+                                   "phone":  "555-0198",
+                                   "email":  "jane.doe@example.com",
+                                   "paymentPreference":  "Freight Factoring",
+                                   "factoringCompanyName":  "Example Factoring Co",
+                                   "status":  "draft",
+                                   "verificationStatus":  "pending",
+                                   "agreementStatus":  "pending",
+                                   "createdAt":  "2026-08-17T14:47:14.000Z",
+                                   "updatedAt":  "2026-08-17T14:47:14.082Z",
+                                   "onboardingSession":  {
+                                                             "lead":  {
+                                                                          "companyName":  "Iron Dispatch LLC",
+                                                                          "contactName":  "Jane Doe",
+                                                                          "email":  "jane.doe@example.com"
+                                                                      }
+                                                         }
+                               },
+                               {
+                                   "id":  "8581df4e-96ae-4df6-9ed2-2a872edda363",
+                                   "onboardingSessionId":  "1a7716c7-4d92-4c42-b38c-a13ab2447230",
+                                   "legalName":  "Iron Dispatch LLC",
+                                   "dbaName":  "Iron Dispatch",
+                                   "authorityNumber":  "MC123456",
+                                   "dotNumber":  "1234567",
+                                   "ein":  "12-3456789",
+                                   "address":  "123 Main St, Springfield, IL",
+                                   "phone":  "555-0198",
+                                   "email":  "jane.doe@example.com",
+                                   "paymentPreference":  "Freight Factoring",
+                                   "factoringCompanyName":  "Example Factoring Co",
+                                   "status":  "draft",
+                                   "verificationStatus":  "pending",
+                                   "agreementStatus":  "pending",
+                                   "createdAt":  "2026-08-17T02:24:01.459Z",
+                                   "updatedAt":  "2026-08-17T02:24:01.676Z",
+                                   "onboardingSession":  {
+                                                             "lead":  {
+                                                                          "companyName":  "Iron Dispatch LLC",
+                                                                          "contactName":  "Jane Doe",
+                                                                          "email":  "jane.doe@example.com"
+                                                                      }
+                                                         }
+                               },
+                               {
+                                   "id":  "95aa3492-b610-457e-9cbf-78f30b3787d2",
+                                   "onboardingSessionId":  "06eb559c-2ab5-4701-b07a-4fb27460bbda",
+                                   "legalName":  "Iron Dispatch LLC",
+                                   "dbaName":  "Iron Dispatch",
+                                   "authorityNumber":  "MC123456",
+                                   "dotNumber":  "1234567",
+                                   "ein":  "12-3456789",
+                                   "address":  "123 Main St, Springfield, IL",
+                                   "phone":  "555-0198",
+                                   "email":  "jane.doe@example.com",
+                                   "paymentPreference":  "Freight Factoring",
+                                   "factoringCompanyName":  "Example Factoring Co",
+                                   "status":  "draft",
+                                   "verificationStatus":  "pending",
+                                   "agreementStatus":  "pending",
+                                   "createdAt":  "2026-08-17T02:03:51.604Z",
+                                   "updatedAt":  "2026-08-17T02:03:51.704Z",
+                                   "onboardingSession":  {
+                                                             "lead":  {
+                                                                          "companyName":  "Iron Dispatch LLC",
+                                                                          "contactName":  "Jane Doe",
+                                                                          "email":  "jane.doe@example.com"
+                                                                      }
+                                                         }
+                               }
+                           ],
+                 "page":  1,
+                 "pageSize":  20,
+                 "totalItems":  28,
+                 "totalPages":  2
+             }
+}

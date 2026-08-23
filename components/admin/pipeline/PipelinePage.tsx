@@ -1,4 +1,4 @@
-/* ============ PipelinePage v4 ============ */
+/* ============ PipelinePage v5 ============ */
 'use client';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { getPipelineSnapshot, buildCarrierDetail, STAGE_ORDER } from '@/lib/admin/pipeline-mock-data';
@@ -30,7 +30,6 @@ export function PipelinePage() {
     getPipelineSnapshot().then((s) => {
       setSnap(s);
       setState('ready');
-      // Reference composition (drawer open on first card) only where the rail fits.
       if (window.matchMedia('(min-width: 1760px)').matches) {
         const first = s.columns[0]?.cards[0];
         if (first) setDetail(s.details[first.id] ?? buildCarrierDetail(first, 0));
@@ -85,7 +84,7 @@ export function PipelinePage() {
           </>
         )}
       </div>
-      {detail && <CarrierDetailDrawer detail={detail} onClose={() => setDetail(null)} />}
+      {detail && <CarrierDetailDrawer detail={detail} demo onClose={() => setDetail(null)} />}
     </div>
   );
 }

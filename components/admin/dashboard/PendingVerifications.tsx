@@ -1,9 +1,9 @@
-/* ============ PendingVerifications v1 ============ */
+/* ============ PendingVerifications v2 ============ */
 'use client';
 import Link from 'next/link';
 import { ArrowRight, Eye, ChevronRight } from 'lucide-react';
-import type { Paged, VerificationRow } from '@/lib/admin/admin-types';
 import { ADMIN_ROUTES } from '@/lib/admin/admin-constants';
+import type { Paged, VerificationRow } from '@/lib/admin/pipeline-types';
 
 const STAGE_STYLE: Record<VerificationRow['stage'], { bg: string; fg: string }> = {
   Insurance: { bg: 'rgba(217,119,6,0.18)', fg: '#ffbd45' },
@@ -66,10 +66,11 @@ export function PendingVerifications({ data }: { data: Paged<VerificationRow> })
                 </td>
                 <td className="px-5 py-3">
                   <span className="flex justify-end gap-1.5">
-                    <Link href={`${ADMIN_ROUTES.carriers}/${row.id}`} aria-label={`Preview ${row.carrierName}`} className="rounded-md border border-[var(--adm-b1)] bg-[var(--adm-s2)] p-1.5 text-[var(--adm-t2)] hover:border-[rgba(245,158,11,0.42)] hover:text-[var(--adm-a4)]">
+                    {/* v2: demo rows bridge to the LIVE carrier queue (real backend) */}
+                    <Link href={ADMIN_ROUTES.carriers} aria-label={`Preview ${row.carrierName} in live carrier queue`} className="rounded-md border border-[var(--adm-b1)] bg-[var(--adm-s2)] p-1.5 text-[var(--adm-t2)] hover:border-[rgba(245,158,11,0.42)] hover:text-[var(--adm-a4)]">
                       <Eye size={13} />
                     </Link>
-                    <Link href={`${ADMIN_ROUTES.verifications}/${row.id}`} aria-label={`Open ${row.carrierName}`} className="rounded-md border border-[var(--adm-b1)] bg-[var(--adm-s2)] p-1.5 text-[var(--adm-t2)] hover:border-[rgba(245,158,11,0.42)] hover:text-[var(--adm-a4)]">
+                    <Link href={ADMIN_ROUTES.carriers} aria-label={`Open live carrier queue for ${row.carrierName}`} className="rounded-md border border-[var(--adm-b1)] bg-[var(--adm-s2)] p-1.5 text-[var(--adm-t2)] hover:border-[rgba(245,158,11,0.42)] hover:text-[var(--adm-a4)]">
                       <ChevronRight size={13} />
                     </Link>
                   </span>
@@ -82,7 +83,7 @@ export function PendingVerifications({ data }: { data: Paged<VerificationRow> })
 
       <div className="flex flex-wrap items-center justify-between gap-3 border-t px-5 py-4" style={{ borderColor: 'var(--adm-b1)' }}>
         <p className="text-[11.5px] text-[var(--adm-t4)]">Showing {from} to {to} of {totalItems} results</p>
-        <Link href={ADMIN_ROUTES.verifications} className="flex items-center gap-2 rounded-md border border-[var(--adm-a6)] px-3.5 py-2 text-[12px] font-medium text-[var(--adm-a4)] hover:bg-[rgba(245,158,11,0.08)]">
+        <Link href={ADMIN_ROUTES.carriers} className="flex items-center gap-2 rounded-md border border-[var(--adm-a6)] px-3.5 py-2 text-[12px] font-medium text-[var(--adm-a4)] hover:bg-[rgba(245,158,11,0.08)]">
           View All Verifications <ArrowRight size={13} />
         </Link>
       </div>

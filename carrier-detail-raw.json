@@ -1,0 +1,102 @@
+﻿{
+    "success":  true,
+    "data":  {
+                 "id":  "468a1d45-77f9-4b44-9a25-15fc2fff39fc",
+                 "onboardingSessionId":  "e45840aa-c642-41aa-ad30-b6152e991bb8",
+                 "legalName":  "Diag Legal LLC",
+                 "dbaName":  null,
+                 "authorityNumber":  "MC991122",
+                 "dotNumber":  "9911223",
+                 "ein":  "12-9911223",
+                 "address":  "9 Diag Way",
+                 "phone":  "555-0177",
+                 "email":  "diag-043333@example.com",
+                 "paymentPreference":  "QuickPay",
+                 "factoringCompanyName":  null,
+                 "status":  "admin_review",
+                 "verificationStatus":  "pending",
+                 "agreementStatus":  "sent",
+                 "createdAt":  "2026-08-23T03:33:40.049Z",
+                 "updatedAt":  "2026-08-23T03:33:41.281Z",
+                 "documents":  [
+                                   {
+                                       "id":  "a178bf2b-8992-4683-b640-fdd701ab24f9",
+                                       "carrierId":  "468a1d45-77f9-4b44-9a25-15fc2fff39fc",
+                                       "documentType":  "mc_authority_letter",
+                                       "filePath":  "468a1d45-77f9-4b44-9a25-15fc2fff39fc-mc_authority_letter-devseed-1787456020178.png",
+                                       "fileName":  "devseed-mc_authority_letter.png",
+                                       "fileSize":  70,
+                                       "mimeType":  "image/png",
+                                       "reviewStatus":  "pending",
+                                       "createdAt":  "2026-08-23T03:33:40.187Z",
+                                       "updatedAt":  "2026-08-23T03:33:40.187Z"
+                                   },
+                                   {
+                                       "id":  "ae1347b6-1bb2-422f-8480-eb23a160a30f",
+                                       "carrierId":  "468a1d45-77f9-4b44-9a25-15fc2fff39fc",
+                                       "documentType":  "certificate_of_insurance",
+                                       "filePath":  "468a1d45-77f9-4b44-9a25-15fc2fff39fc-certificate_of_insurance-devseed-1787456020223.png",
+                                       "fileName":  "devseed-certificate_of_insurance.png",
+                                       "fileSize":  70,
+                                       "mimeType":  "image/png",
+                                       "reviewStatus":  "pending",
+                                       "createdAt":  "2026-08-23T03:33:41.076Z",
+                                       "updatedAt":  "2026-08-23T03:33:41.076Z"
+                                   },
+                                   {
+                                       "id":  "e328a844-c07a-43ee-81a3-5c618c771c1b",
+                                       "carrierId":  "468a1d45-77f9-4b44-9a25-15fc2fff39fc",
+                                       "documentType":  "w9_or_w8bene",
+                                       "filePath":  "468a1d45-77f9-4b44-9a25-15fc2fff39fc-w9_or_w8bene-devseed-1787456021109.png",
+                                       "fileName":  "devseed-w9_or_w8bene.png",
+                                       "fileSize":  70,
+                                       "mimeType":  "image/png",
+                                       "reviewStatus":  "pending",
+                                       "createdAt":  "2026-08-23T03:33:41.116Z",
+                                       "updatedAt":  "2026-08-23T03:33:41.116Z"
+                                   }
+                               ],
+                 "verificationResults":  [
+
+                                         ],
+                 "agreements":  [
+                                    {
+                                        "id":  "db749e92-2efe-45e6-b0a7-9b126510232a",
+                                        "carrierId":  "468a1d45-77f9-4b44-9a25-15fc2fff39fc",
+                                        "method":  "custom_capture",
+                                        "status":  "sent",
+                                        "envelopeId":  null,
+                                        "signedPdfPath":  null,
+                                        "signerName":  null,
+                                        "signerIp":  null,
+                                        "consentTextShown":  null,
+                                        "signedAt":  null,
+                                        "createdAt":  "2026-08-23T03:33:41.279Z",
+                                        "updatedAt":  "2026-08-23T03:33:41.279Z"
+                                    }
+                                ],
+                 "onboardingSession":  {
+                                           "id":  "e45840aa-c642-41aa-ad30-b6152e991bb8",
+                                           "leadId":  "e5b13fa1-e350-420d-8822-ee99f93a9c54",
+                                           "token":  "ab5ae160ba76cdabcf881b4b601cefc21f1ff0f5e229ecc8d108cf9da43b7bd3",
+                                           "status":  "submitted",
+                                           "expiresAt":  "2026-09-22T03:33:33.788Z",
+                                           "submittedAt":  "2026-08-23T03:33:41.263Z",
+                                           "furthestCompletedSection":  7,
+                                           "createdAt":  "2026-08-23T03:33:33.804Z",
+                                           "updatedAt":  "2026-08-23T03:33:41.264Z",
+                                           "lead":  {
+                                                        "id":  "e5b13fa1-e350-420d-8822-ee99f93a9c54",
+                                                        "companyName":  "Diag Co",
+                                                        "contactName":  "Di Ag",
+                                                        "email":  "diag-043333@example.com",
+                                                        "phone":  "555-0177",
+                                                        "authorityNumber":  null,
+                                                        "status":  "onboarding_submitted",
+                                                        "consentAccepted":  true,
+                                                        "createdAt":  "2026-08-23T03:33:33.789Z",
+                                                        "updatedAt":  "2026-08-23T03:33:41.270Z"
+                                                    }
+                                       }
+             }
+}

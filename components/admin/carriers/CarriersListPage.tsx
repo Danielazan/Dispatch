@@ -86,7 +86,7 @@ export function CarriersListPage() {
                   <td className="px-3 py-3">{c.status ? <StatusBadge value={c.status} /> : '—'}</td>
                   <td className="px-3 py-3">{c.verificationStatus ? <StatusBadge value={c.verificationStatus} /> : '—'}</td>
                   <td className="px-3 py-3">{c.agreementStatus ? <StatusBadge value={c.agreementStatus} /> : '—'}</td>
-                  <td className="tnum px-3 py-3 text-[var(--adm-t3)]">{formatDateTime(c.submittedAt ?? c.createdAt)}</td>
+                  <td className="tnum px-3 py-3 text-[var(--adm-t3)]">{formatDateTime(c.createdAt)}</td>
                   <td className="px-5 py-3">
                     <span className="flex justify-end">
                       <button onClick={() => router.push('/admin/carriers/' + c.id)} aria-label={'Open carrier file for ' + (c.legalName ?? c.id)}
@@ -120,3 +120,4 @@ export function CarriersListPage() {
     </div>
   );
 }
+

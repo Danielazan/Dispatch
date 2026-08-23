@@ -1,7 +1,8 @@
+﻿/* ============ FooterLegal v2 ============ */
+import Link from "next/link";
 import SectionContainer from "@/components/landing/SectionContainer";
 import { footerLegalLinks } from "./footerData";
 
-/* Quiet closing credits (§32–33). */
 export default function FooterLegal() {
   const year = new Date().getFullYear();
 
@@ -14,13 +15,13 @@ export default function FooterLegal() {
         <ul className="flex items-center gap-6">
           {footerLegalLinks.map((link) => (
             <li key={link.label}>
-              <a
+              <Link
                 href={link.href}
                 className="s7-link inline-block pb-0.5 text-[11px] text-[rgba(138,145,143,0.75)]"
               >
                 {link.label}
                 <span aria-hidden="true" className="s7-link-rule" />
-              </a>
+              </Link>
             </li>
           ))}
         </ul>

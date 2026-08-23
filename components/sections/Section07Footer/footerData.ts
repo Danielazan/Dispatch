@@ -1,14 +1,11 @@
-/* ============================================================
-   SECTION 07 — DATA / ASSET MAP
-   Single source of truth for footer content. If the supplied
-   truck image filename differs, update `footerAssets` ONLY.
+﻿/* ============================================================
+   SECTION 07 — DATA / ASSET MAP (v2)
    ============================================================ */
 
 export const footerAssets = {
   truck: "/images/section-07/footer-truck.png",
 } as const;
 
-/** Debug toggle — may expose ScrollTrigger markers + stage logs. Never ship enabled. */
 export const DEBUG_SECTION_07 = false;
 
 export const footerBrand = {
@@ -21,8 +18,6 @@ export interface FooterLink {
   href: string;
 }
 
-/* TODO(integration): replace "#" placeholders with production routes as they exist.
-   "#" is used here strictly as a temporary development placeholder (§52). */
 export const footerNavigation = {
   services: {
     title: "SERVICES",
@@ -44,7 +39,7 @@ export const footerNavigation = {
       { label: "How It Works", href: "#" },
       { label: "Reviews", href: "#" },
       { label: "FAQ", href: "#" },
-      { label: "Contact Us", href: "#lead-form" }, // resolves to Section 06 intake
+      { label: "Contact Us", href: "#lead-form" },
       { label: "Careers", href: "#" },
     ],
   },
@@ -61,8 +56,6 @@ export const footerNavigation = {
   },
 } as const;
 
-/* Authoritative project contact values (reference spec §25).
-   If real values exist elsewhere in the project, replace here only. */
 export const footerContact = {
   phoneLabel: "(833) 476-4278",
   phoneHref: "tel:+18334764278",
@@ -80,7 +73,6 @@ export interface SocialLink {
   icon: SocialIconKey;
 }
 
-/* TODO(integration): replace "#" with production social URLs when available. */
 export const footerSocial: SocialLink[] = [
   { label: "Facebook", href: "#", icon: "facebook" },
   { label: "Instagram", href: "#", icon: "instagram" },
@@ -88,8 +80,8 @@ export const footerSocial: SocialLink[] = [
   { label: "LinkedIn", href: "#", icon: "linkedin" },
 ];
 
-/* TODO(integration): wire legal routes when the pages exist. */
+/* v2: Legal routes wired to /privacy and /terms (PART 7). */
 export const footerLegalLinks: FooterLink[] = [
-  { label: "Privacy Policy", href: "#" },
-  { label: "Terms of Service", href: "#" },
+  { label: "Privacy Policy", href: "/privacy" },
+  { label: "Terms of Service", href: "/terms" },
 ];

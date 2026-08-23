@@ -1,4 +1,4 @@
-/* ============ Scene07Submit v3 ============ */
+﻿/* ============ Scene07Submit v3 ============ */
 'use client';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useOnboarding, useSceneSave } from '@/lib/onboarding/context';
@@ -6,7 +6,7 @@ import { obApi } from '@/lib/onboarding/api';
 import { LEGAL_TEXT } from '@/config/site';
 import { PenLine, Eraser, AlertTriangle, CheckCircle2, ExternalLink, ShieldAlert } from 'lucide-react';
 
-/* Map 422 missing carrier fields → the scene that owns them. Mirrors submissionRequirements.js. */
+/* Map 422 missing carrier fields â†’ the scene that owns them. Mirrors submissionRequirements.js. */
 const FIELD_TO_STEP: Record<string, { step: number; label: string }> = {
   legalName: { step: 0, label: 'Business Information' },
   dbaName: { step: 0, label: 'Business Information' },
@@ -33,10 +33,10 @@ function fieldError(details: any[] | undefined, path: string): string | undefine
   return details.find((d) => d?.path === path)?.message;
 }
 
-/* GAP-011 RESOLVED (2026-08-22) — real 422 envelope captured:
+/* GAP-011 RESOLVED (2026-08-22) â€” real 422 envelope captured:
    error.code = 'submission_incomplete'
    error.details = [{ path: 'carrier.<field>' | 'documents.<type>', message }]
-   Paths are DOT-JOINED with a prefix → strip 'carrier.' / 'documents.' before routing. */
+   Paths are DOT-JOINED with a prefix â†’ strip 'carrier.' / 'documents.' before routing. */
 function parseMissing(e: any): { carrierFields: string[]; documents: string[] } | null {
   const details = Array.isArray(e?.details) ? e.details : [];
   if (details.length === 0) return null;
@@ -81,7 +81,7 @@ export function Scene07Submit() {
     return () => { cancelled = true; };
   }, [state.token]);
 
-  /* ---- Canvas signature capture (touch-friendly, ≤800px PNG) ---- */
+  /* ---- Canvas signature capture (touch-friendly, â‰¤800px PNG) ---- */
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const drawing = useRef(false);
   const lastPoint = useRef<{ x: number; y: number } | null>(null);
@@ -163,7 +163,7 @@ export function Scene07Submit() {
   }, [hasSignature]);
 
   /* ---- STEP 2 helper: sign AFTER submit. Retries briefly because the
-         agreement dispatch runs async server-side (Integration Ref §12). ---- */
+         agreement dispatch runs async server-side (Integration Ref Â§12). ---- */
   const signAgreement = async (signatureImage: string): Promise<'signed' | 'already' | 'failed'> => {
     for (let attempt = 1; attempt <= 3; attempt++) {
       try {
@@ -176,7 +176,7 @@ export function Scene07Submit() {
       } catch (e: any) {
         if (e?.status === 409 && e?.code === 'agreement_already_signed') return 'already';
         if (e?.code === 'no_active_agreement' && attempt < 3) {
-          await new Promise((r) => setTimeout(r, 900)); // async dispatch race — retry
+          await new Promise((r) => setTimeout(r, 900)); // async dispatch race â€” retry
           continue;
         }
         if (e?.status === 400) {
@@ -187,7 +187,7 @@ export function Scene07Submit() {
           });
           return 'failed';
         }
-        if (e?.status === 429) { setError('Too many signature attempts — please wait a moment and try again.'); return 'failed'; }
+        if (e?.status === 429) { setError('Too many signature attempts â€” please wait a moment and try again.'); return 'failed'; }
         if (e?.status === 410) { reload(); return 'failed'; }
         return 'failed';
       }
@@ -195,8 +195,8 @@ export function Scene07Submit() {
     return 'failed';
   };
 
-  /* ---- v3 SEQUENCE (backend wins over handover §10.3 — DOC-DIFF-2):
-         SUBMIT first (creates the agreement) → SIGN → refreshSession. ---- */
+  /* ---- v3 SEQUENCE (backend wins over handover Â§10.3 â€” DOC-DIFF-2):
+         SUBMIT first (creates the agreement) â†’ SIGN â†’ refreshSession. ---- */
   const handleSubmit = async () => {
     setError(null);
     setFieldErrors({});
@@ -210,11 +210,11 @@ export function Scene07Submit() {
     if (Object.keys(fe).length) { setFieldErrors(fe); return; }
 
     const signatureImage = exportSignature();
-    if (signatureMode === 'canvas' && !signatureImage) { setFieldErrors({ signature: 'Unable to read the signature — please sign again.' }); return; }
+    if (signatureMode === 'canvas' && !signatureImage) { setFieldErrors({ signature: 'Unable to read the signature â€” please sign again.' }); return; }
 
     setSubmitting(true);
     try {
-      // STEP 1 — SUBMIT
+      // STEP 1 â€” SUBMIT
       let submitted = false;
       try {
         await obApi.submit(state.token);
@@ -225,28 +225,28 @@ export function Scene07Submit() {
           setError('Your application is incomplete. Resolve the items below, then return here to submit.');
           setSubmitting(false); return;
         } else if (e?.status === 423) {
-          submitted = true; // already submitted earlier — recover into signature
-          setAgreementNote('Application already submitted — completing your signature.');
+          submitted = true; // already submitted earlier â€” recover into signature
+          setAgreementNote('Application already submitted â€” completing your signature.');
         } else if (e?.status === 429) {
-          setError('Too many attempts — please wait a moment and try again.');
+          setError('Too many attempts â€” please wait a moment and try again.');
           setSubmitting(false); return;
         } else if (e?.status === 410) {
           reload(); setSubmitting(false); return;
         } else throw e;
       }
 
-      // STEP 2 — SIGN (agreement now exists; retry handles the async race)
+      // STEP 2 â€” SIGN (agreement now exists; retry handles the async race)
       if (submitted) {
         const outcome = await signAgreement(signatureImage ?? '');
         if (outcome === 'signed') setAgreementNote('Signature recorded. Your application is submitted.');
-        else if (outcome === 'already') setAgreementNote('Agreement already signed — proceeding.');
-        // 'failed' → still submitted; refreshSession below shows the true state
+        else if (outcome === 'already') setAgreementNote('Agreement already signed â€” proceeding.');
+        // 'failed' â†’ still submitted; refreshSession below shows the true state
       }
 
-      // STEP 3 — response-shape-agnostic refetch (D11) → AlreadySubmittedState
+      // STEP 3 â€” response-shape-agnostic refetch (D11) â†’ AlreadySubmittedState
       await refreshSession();
     } catch (e: any) {
-      setError(e?.message ?? 'Submission failed — please try again.');
+      setError(e?.message ?? 'Submission failed â€” please try again.');
     } finally {
       setSubmitting(false);
     }
@@ -259,7 +259,7 @@ export function Scene07Submit() {
         <div>
           <h3 className="text-[15px] font-semibold text-ivory-50">Authorization & Signature</h3>
           <p className="text-[12px] text-steel-400">
-            Read the authorization below, then sign. This is the point of no return — after submission your application is locked for review.
+            Read the authorization below, then sign. This is the point of no return â€” after submission your application is locked for review.
           </p>
         </div>
       </div>
@@ -267,7 +267,7 @@ export function Scene07Submit() {
       <div className="flex items-start gap-2.5 border border-brass-500/40 rounded-[6px] px-3 py-2 bg-brass-500/5 mb-4">
         <AlertTriangle size={14} className="text-brass-400 shrink-0 mt-0.5" />
         <p className="text-[12px] leading-relaxed text-brass-300">
-          Final legal copy pending — the consent language shown is a placeholder and must be replaced with approved copy before production launch.
+          Final legal copy pending â€” the consent language shown is a placeholder and must be replaced with approved copy before production launch.
         </p>
       </div>
 
@@ -293,7 +293,7 @@ export function Scene07Submit() {
 
       {signatureMode === 'loading' && (
         <div className="rounded-[8px] border border-steel-700/30 bg-ink-900/30 h-40 grid place-items-center">
-          <p className="text-[12px] text-steel-400">Preparing signature pad…</p>
+          <p className="text-[12px] text-steel-400">Preparing signature padâ€¦</p>
         </div>
       )}
 
@@ -340,7 +340,12 @@ export function Scene07Submit() {
             disabled={submitting}
             className="mt-0.5 h-4 w-4 shrink-0 rounded-[2px] border border-steel-700/40 accent-brass-500"
           />
-          <span className="text-[12px] leading-relaxed text-steel-300">{LEGAL_TEXT.consentCheckboxLabel}</span>
+          <span className="text-[12px] leading-relaxed text-steel-300">
+            I authorize the dispatch services and agree to the{' '}
+            <a href="/terms" target="_blank" rel="noopener noreferrer" className="text-brass-400 underline decoration-brass-500/40 hover:text-brass-300">Terms of Service</a>
+            {' '}and{' '}
+            <a href="/privacy" target="_blank" rel="noopener noreferrer" className="text-brass-400 underline decoration-brass-500/40 hover:text-brass-300">Privacy Policy</a>.
+          </span>
         </label>
         {fieldErrors.consent && <p className="mt-1 text-[11px] text-red-400">{fieldErrors.consent}</p>}
       </div>
@@ -364,14 +369,14 @@ export function Scene07Submit() {
               return (
                 <button key={f} type="button" onClick={() => goToStep(t.step)}
                   className="block text-left text-[12px] text-brass-300 underline decoration-brass-500/40 hover:text-brass-200">
-                  {f} → {t.label}
+                  {f} â†’ {t.label}
                 </button>
               );
             })}
             {missing.documents.map((doc) => (
               <button key={doc} type="button" onClick={() => goToStep(DOCUMENTS_STEP)}
                 className="block text-left text-[12px] text-brass-300 underline decoration-brass-500/40 hover:text-brass-200">
-                {DOC_LABELS[doc] ?? doc} → Documents Upload
+                {DOC_LABELS[doc] ?? doc} â†’ Documents Upload
               </button>
             ))}
           </div>
@@ -383,7 +388,7 @@ export function Scene07Submit() {
       <div className="flex items-center gap-4">
         <button type="button" onClick={handleSubmit} disabled={submitting || signatureMode === 'loading'}
           className="group flex items-center gap-3 h-11 px-8 rounded-[7px] bg-brass-500 hover:bg-brass-400 text-ink-950 text-[13px] font-display font-semibold uppercase tracking-[0.06em] shadow-[0_16px_36px_rgba(0,0,0,0.18)] transition-colors disabled:opacity-60">
-          {submitting ? 'Submitting…' : 'Sign & Submit Application'}
+          {submitting ? 'Submittingâ€¦' : 'Sign & Submit Application'}
         </button>
         <span className="text-[11px] text-steel-500 max-w-[260px]">
           Submitting locks this application for compliance review. You'll receive confirmation by email.

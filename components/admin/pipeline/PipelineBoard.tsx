@@ -1,27 +1,20 @@
-/* ============ PipelineBoard v5 ============ */
+﻿/* ============ PipelineBoard v6 ============ */
 'use client';
-import type { PipelineCardData, PipelineColumnData, PipelineStageId } from '@/lib/admin/pipeline-types';
+import type { CarrierSummary, Page } from '@/lib/admin/carrier-types';
+import { QUEUE_COLUMNS, type QueueStatus } from '@/lib/admin/pipeline-data';
 import { PipelineColumn } from './PipelineColumn';
 
-export function PipelineBoard({ columns, hiddenStages, selectedId, compact, onSelect }: {
-  columns: PipelineColumnData[];
-  hiddenStages: PipelineStageId[];
-  selectedId: string | null;
-  compact: boolean;
-  onSelect: (c: PipelineCardData, s: PipelineStageId) => void;
+export function PipelineBoard({ pages, totals, onLoadMore, onOpen }: {
+  pages: Record<QueueStatus, Page<CarrierSummary>>;
+  totals: Record<string, number>;
+  onLoadMore: (s: QueueStatus) => void;
+  onOpen: (id: string) => void;
 }) {
-  const visible = columns.filter((c) => !hiddenStages.includes(c.stage));
   return (
-    <div className="pipe-board-wrap pipe-scrollbar pb-2">
-      <div className="pipe-board items-start" style={{ '--pipe-cols': visible.length } as React.CSSProperties}>
-        {visible.map((col) => (
-          <PipelineColumn
-            key={col.stage}
-            column={col}
-            selectedId={selectedId}
-            compact={compact}
-            onSelect={onSelect}
-          />
+    <div className="pipe-scrollbar overflow-x-auto pb-2">
+      <div className="pipe-board items-start" style={{ '--pipe-cols': QUEUE_COLUMNS.length } as React.CSSProperties}>
+        {QUEUE_COLUMNS.map((def) => (
+          <PipelineColumn key={def.id} def={def} pages={pages} total={totals[def.id] ?? 0} onLoadMore={onLoadMore} onOpen={onOpen} />
         ))}
       </div>
     </div>

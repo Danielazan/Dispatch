@@ -1,90 +1,102 @@
-/* ============ PipelinePage v5 ============ */
+﻿/* ============ PipelinePage v6 ============ */
 'use client';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { getPipelineSnapshot, buildCarrierDetail, STAGE_ORDER } from '@/lib/admin/pipeline-mock-data';
-import type { CarrierPipelineDetail, PipelineCardData, PipelineSnapshot, PipelineStageId } from '@/lib/admin/pipeline-types';
+import { useRouter } from 'next/navigation';
 import { useAdminAuth } from '@/lib/admin/admin-auth';
+import type { CarrierSummary, Page } from '@/lib/admin/carrier-types';
+import { ALL_STATUSES, fetchStatusQueue, QUEUE_COLUMNS, STATUS_LABELS, type QueueStatus } from '@/lib/admin/pipeline-data';
 import { usePipelineEntranceTimeline } from './PipelineMotion';
-import { PipelineHeader } from './PipelineHeader';
 import { StageSummaryStrip } from './StageSummaryStrip';
 import { PipelineBoard } from './PipelineBoard';
-import { PipelineAnalytics } from './PipelineAnalytics';
 import { PipelineDistribution } from './PipelineDistribution';
-import { PipelineBottlenecks } from './PipelineBottlenecks';
-import { CarrierDetailDrawer } from './CarrierDetailDrawer';
+import { PipelineAttention } from './PipelineAttention';
 import { PipelineSkeleton, PipelineErrorState, PipelinePermissionState } from './PipelineStates';
 
 export function PipelinePage() {
   const { can } = useAdminAuth();
-  const [snap, setSnap] = useState<PipelineSnapshot | null>(null);
+  const router = useRouter();
+  const [pages, setPages] = useState<Record<QueueStatus, Page<CarrierSummary>> | null>(null);
   const [state, setState] = useState<'loading' | 'error' | 'ready'>('loading');
-  const [activeStage, setActiveStage] = useState<PipelineStageId>('submitted');
-  const [hiddenStages, setHiddenStages] = useState<PipelineStageId[]>([]);
-  const [density, setDensity] = useState<'comfortable' | 'compact'>('comfortable');
-  const [showPct, setShowPct] = useState(true);
-  const [detail, setDetail] = useState<CarrierPipelineDetail | null>(null);
+  const [activeId, setActiveId] = useState<string | null>(null);
   const rootRef = useRef<HTMLDivElement>(null);
 
-  const load = useCallback(() => {
+  const load = useCallback(async () => {
     setState('loading');
-    getPipelineSnapshot().then((s) => {
-      setSnap(s);
+    try {
+      const results = await Promise.all(ALL_STATUSES.map(async (s) => [s, await fetchStatusQueue(s)] as const));
+      const map = {} as Record<QueueStatus, Page<CarrierSummary>>;
+      results.forEach(([s, p]) => { map[s] = p; });
+      setPages(map);
       setState('ready');
-      if (window.matchMedia('(min-width: 1760px)').matches) {
-        const first = s.columns[0]?.cards[0];
-        if (first) setDetail(s.details[first.id] ?? buildCarrierDetail(first, 0));
-      }
-    }).catch(() => setState('error'));
+    } catch { setState('error'); }
   }, []);
 
   useEffect(() => { load(); }, [load]);
   usePipelineEntranceTimeline(rootRef, state === 'ready');
 
-  const jumpToStage = useCallback((s: PipelineStageId) => {
-    setActiveStage(s);
-    document.getElementById(`pipe-col-${s}`)?.scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' });
-  }, []);
-
-  const onSelectCard = useCallback((c: PipelineCardData, stage: PipelineStageId) => {
-    setActiveStage(stage);
-    setDetail((prev) => prev?.id === c.id ? prev : (snap?.details[c.id] ?? buildCarrierDetail(c, STAGE_ORDER.indexOf(stage))));
-  }, [snap]);
+  const loadMore = useCallback(async (s: QueueStatus) => {
+    if (!pages) return;
+    const cur = pages[s];
+    if (!cur || cur.page >= cur.totalPages) return;
+    try {
+      const next = await fetchStatusQueue(s, cur.page + 1);
+      setPages({ ...pages, [s]: { ...next, items: [...cur.items, ...next.items] } });
+    } catch { /* keep current page on failure */ }
+  }, [pages]);
 
   if (!can('carriers.view')) return <div className="p-6"><PipelinePermissionState /></div>;
 
+  const totals: Record<string, number> = {};
+  let grandTotal = 0;
+  if (pages) {
+    QUEUE_COLUMNS.forEach((col) => {
+      totals[col.id] = col.statuses.reduce((sum, s) => sum + (pages[s]?.totalItems ?? 0), 0);
+      grandTotal += totals[col.id];
+    });
+  }
+
+  const onSelectStrip = (id: string) => {
+    setActiveId(id);
+    document.getElementById('pipe-col-' + id)?.scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' });
+  };
+
   return (
-    <div ref={rootRef} data-pipe="shell" className="flex min-h-full">
-      <div className="min-w-0 flex-1 space-y-5 p-5 md:p-6">
-        {state === 'loading' && <PipelineSkeleton />}
-        {state === 'error' && <PipelineErrorState onRetry={load} />}
-        {state === 'ready' && snap && (
-          <>
-            <PipelineHeader
-              columns={snap.columns}
-              hiddenStages={hiddenStages}
-              onToggleStage={(s) => setHiddenStages((h) => h.includes(s) ? h.filter((x) => x !== s) : [...h, s])}
-              density={density}
-              onToggleDensity={() => setDensity((d) => d === 'compact' ? 'comfortable' : 'compact')}
-              showPct={showPct}
-              onToggleShowPct={() => setShowPct((v) => !v)}
-            />
-            <StageSummaryStrip summaries={snap.summaries} active={activeStage} showPct={showPct} onSelect={jumpToStage} />
-            <PipelineBoard
-              columns={snap.columns}
-              hiddenStages={hiddenStages}
-              selectedId={detail?.id ?? null}
-              compact={density === 'compact'}
-              onSelect={onSelectCard}
-            />
-            <div className="grid grid-cols-1 gap-5 xl:grid-cols-3">
-              <PipelineAnalytics data={snap.analytics} />
-              <PipelineDistribution slices={snap.distribution} total={snap.pipelineTotal} />
-              <PipelineBottlenecks rows={snap.bottlenecks} onJump={jumpToStage} />
-            </div>
-          </>
-        )}
+    <div ref={rootRef} data-pipe="shell" className="space-y-5 p-5 md:p-6">
+      <div>
+        <h1 data-pipe="title" className="text-[26px] font-extrabold leading-8 text-[var(--adm-t1)]">Onboarding Pipeline</h1>
+        <p className="mt-1 text-[12px] text-[var(--adm-t3)]">Live carrier queues from the database — draft through suspended. Click a card to open its carrier file.</p>
       </div>
-      {detail && <CarrierDetailDrawer detail={detail} onClose={() => setDetail(null)} />}
+
+      {state === 'loading' && <PipelineSkeleton />}
+      {state === 'error' && <PipelineErrorState onRetry={load} />}
+      {state === 'ready' && pages && (
+        <>
+          <StageSummaryStrip
+            activeId={activeId}
+            onSelect={onSelectStrip}
+            summaries={QUEUE_COLUMNS.map((col, i) => ({
+              id: col.id, num: i + 1, label: col.title,
+              count: totals[col.id] ?? 0,
+              percentage: grandTotal ? ((totals[col.id] ?? 0) / grandTotal) * 100 : 0,
+            }))}
+          />
+          <PipelineBoard pages={pages} totals={totals} onLoadMore={loadMore} onOpen={(id) => router.push('/admin/carriers/' + id)} />
+          <div className="grid grid-cols-1 gap-5 xl:grid-cols-2">
+            <PipelineDistribution
+              total={grandTotal}
+              counts={ALL_STATUSES.map((s) => ({ status: s, label: STATUS_LABELS[s], count: pages[s]?.totalItems ?? 0 }))}
+            />
+            <PipelineAttention
+              rows={[
+                { id: 'admin_review', label: 'Admin Review', count: pages.admin_review?.totalItems ?? 0, icon: 'review', hint: 'awaiting compliance decision' },
+                { id: 'approved', label: 'Approved — Not Activated', count: pages.approved?.totalItems ?? 0, icon: 'approve', hint: 'ready to activate' },
+                { id: 'rejected', label: 'Rejected', count: pages.rejected?.totalItems ?? 0, icon: 'rejected', hint: 'reason on file' },
+                { id: 'suspended', label: 'Suspended', count: pages.suspended?.totalItems ?? 0, icon: 'suspended', hint: 'locked queue' },
+              ]}
+            />
+          </div>
+        </>
+      )}
     </div>
   );
 }

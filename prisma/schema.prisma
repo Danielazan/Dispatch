@@ -1,0 +1,399 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// --- ENUMS ---
+
+enum LeadStatus {
+  new
+  link_sent
+  onboarding_started
+  onboarding_submitted
+  converted
+  abandoned
+}
+
+enum OnboardingSessionStatus {
+  active
+  submitted
+  expired
+  revoked
+}
+
+enum CarrierStatus {
+  draft
+  submitted
+  verification_pending
+  verification_passed
+  verification_failed
+  agreement_pending
+  agreement_signed
+  admin_review
+  approved
+  rejected
+  active
+  suspended
+}
+
+enum VerificationStatus {
+  pending
+  verified
+  not_found
+  mismatch
+  inconclusive
+  manual_pending
+  admin_confirmed
+  rejected
+}
+
+enum AgreementStatus {
+  pending
+  sent
+  signed
+  declined
+  voided
+  expired
+  failed // Decision 12
+}
+
+enum DocumentType {
+  mc_authority_letter
+  certificate_of_insurance
+  w9_or_w8bene
+  noa
+}
+
+enum DocumentReviewStatus {
+  pending
+  accepted
+  rejected
+}
+
+enum VerificationMethod {
+  fmcsa_api
+  aggregator_api
+  format_check
+  manual_review
+}
+
+enum VerificationResultStatus {
+  verified
+  not_found
+  mismatch
+  inconclusive
+  manual_pending
+}
+
+enum AgreementMethod {
+  docusign
+  custom_capture
+}
+
+enum LoadSource {
+  internal
+  one_twenty_three_loadboard
+}
+
+enum LoadStatus {
+  available
+  negotiating
+  booked
+  in_transit
+  delivered
+  cancelled
+}
+
+// --- MODELS ---
+
+model AdminUser {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  passwordHash  String    @map("password_hash")
+  fullName      String    @map("full_name")
+  isActive      Boolean   @default(true) @map("is_active")
+  roleId        String    @map("role_id")
+  lastLoginAt   DateTime? @map("last_login_at")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  role          AdminRole           @relation(fields: [roleId], references: [id])
+  refreshTokens AdminRefreshToken[]
+  auditLogs     AuditLog[]
+
+  @@map("admin_users")
+}
+
+model AdminRole {
+  id           String   @id @default(uuid())
+  name         String   @unique
+  isSuperAdmin Boolean  @default(false) @map("is_super_admin")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  users           AdminUser[]
+  rolePermissions AdminRolePermission[]
+
+  @@map("admin_roles")
+}
+
+model AdminPermission {
+  id          String   @id @default(uuid())
+  key         String   @unique
+  description String?
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  rolePermissions AdminRolePermission[]
+
+  @@map("admin_permissions")
+}
+
+model AdminRolePermission {
+  id           String   @id @default(uuid())
+  roleId       String   @map("role_id")
+  permissionId String   @map("permission_id")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  role       AdminRole       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission AdminPermission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@unique([roleId, permissionId])
+  @@map("admin_role_permissions")
+}
+
+// Decision 1: DB-backed revocable refresh tokens
+model AdminRefreshToken {
+  id          String    @id @default(uuid())
+  adminUserId String    @map("admin_user_id")
+  tokenHash   String    @map("token_hash")
+  expiresAt   DateTime  @map("expires_at")
+  revokedAt   DateTime? @map("revoked_at")
+  userAgent   String?   @map("user_agent")
+  ipAddress   String?   @map("ip_address")
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  adminUser AdminUser @relation(fields: [adminUserId], references: [id], onDelete: Cascade)
+
+  @@map("admin_refresh_tokens")
+}
+
+model Lead {
+  id              String     @id @default(uuid())
+  companyName     String     @map("company_name")
+  contactName     String     @map("contact_name")
+  email           String
+  phone           String?
+  authorityNumber String?    @map("authority_number")
+  status          LeadStatus @default(new)
+  consentAccepted Boolean    @map("consent_accepted")
+  createdAt       DateTime   @default(now()) @map("created_at")
+  updatedAt       DateTime   @updatedAt @map("updated_at")
+
+  onboardingSessions OnboardingSession[]
+  emailLogs          EmailLog[]
+
+  @@index([status])
+  @@map("leads")
+}
+
+model OnboardingSession {
+  id                       String                  @id @default(uuid())
+  leadId                   String                  @map("lead_id")
+  token                    String                  @unique
+  status                   OnboardingSessionStatus @default(active)
+  expiresAt                DateTime                @map("expires_at")
+  submittedAt              DateTime?               @map("submitted_at")
+  furthestCompletedSection Int?                    @map("furthest_completed_section") // Decision 4
+  createdAt                DateTime                @default(now()) @map("created_at")
+  updatedAt                DateTime                @updatedAt @map("updated_at")
+
+  lead Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  carrier Carrier? // Back-relation: FK lives on the Carrier side (no circular FK)
+
+  @@index([status])
+  @@map("onboarding_sessions")
+}
+
+model Carrier {
+  id                   String              @id @default(uuid())
+  onboardingSessionId  String              @unique @map("onboarding_session_id")
+  legalName            String?             @map("legal_name")
+  dbaName              String?             @map("dba_name")
+  authorityNumber      String?             @map("authority_number")
+  dotNumber            String?             @map("dot_number")
+  ein                  String?
+  address              String?
+  phone                String?
+  email                String?
+  paymentPreference    String?             @map("payment_preference")
+  factoringCompanyName String?             @map("factoring_company_name")
+    factoringNoaEmail    String?             @map("factoring_noa_email")
+  
+    // Section 2: Technical Equipment Specifications
+    activeTrucksCount    Int?                @map("active_trucks_count")
+    truckType            String?             @map("truck_type")
+    trailerConfig        Json?               @map("trailer_config")
+    maxFreightWeight     String?             @map("max_freight_weight")
+    carriesTarps         Boolean?            @default(false) @map("carries_tarps")
+    tarpSize             String?             @map("tarp_size")
+    strapCount           Int?                @map("strap_count")
+    chainBinderCount     Int?                @map("chain_binder_count")
+    hasFastCard          Boolean?            @default(false) @map("has_fast_card")
+    hasTwicCard          Boolean?            @default(false) @map("has_twic_card")
+    
+    // Section 3: Freight Preferences & Lanes
+    preferredOrigins     String?             @map("preferred_origins")
+    preferredDestinations String?            @map("preferred_destinations")
+    minRatePerMile       Float?              @map("min_rate_per_mile")
+    prohibitedLocations  String?             @map("prohibited_locations")
+    comfortableWithLayovers Boolean?         @default(false) @map("comfortable_with_layovers")
+    
+    // Section 5: Directory & Contact Details
+    dispatchContactName  String?             @map("dispatch_contact_name")
+    dispatchPhone        String?             @map("dispatch_phone")
+    dispatchEmail        String?             @map("dispatch_email")
+    afterHoursCell       String?             @map("after_hours_cell")
+    accountingEmail      String?             @map("accounting_email")
+
+  status               CarrierStatus       @default(draft)
+  verificationStatus   VerificationStatus? @default(pending) @map("verification_status") // Decision 3
+  agreementStatus      AgreementStatus?    @default(pending) @map("agreement_status")    // Decision 3
+  createdAt            DateTime            @default(now()) @map("created_at")
+  updatedAt            DateTime            @updatedAt @map("updated_at")
+
+  onboardingSession   OnboardingSession    @relation(fields: [onboardingSessionId], references: [id], onDelete: Cascade)
+  documents           CarrierDocument[]
+  verificationResults VerificationResult[]
+  agreements          Agreement[]
+  loads               Load[]
+  emailLogs           EmailLog[]
+
+  @@index([status])
+  @@map("carriers")
+}
+
+model CarrierDocument {
+  id           String               @id @default(uuid())
+  carrierId    String               @map("carrier_id")
+  documentType DocumentType         @map("document_type")
+  filePath     String               @map("file_path")
+  fileName     String               @map("file_name")
+  fileSize     Int                  @map("file_size")
+  mimeType     String               @map("mime_type")
+  reviewStatus DocumentReviewStatus @default(pending) @map("review_status")
+  reviewNotes      String?              @map("review_notes")
+  reviewedByAdminId String?             @map("reviewed_by_admin_id")
+  createdAt    DateTime             @default(now()) @map("created_at")
+  updatedAt    DateTime             @updatedAt @map("updated_at")
+
+  carrier Carrier @relation(fields: [carrierId], references: [id], onDelete: Cascade)
+
+  @@unique([carrierId, documentType]) // Decision 8: one active document per type
+  @@map("carrier_documents")
+}
+
+model VerificationResult {
+  id                String                   @id @default(uuid())
+  carrierId         String                   @map("carrier_id")
+  method            VerificationMethod
+  status            VerificationResultStatus
+  rawResponse       Json?                    @map("raw_response")
+  legalNameMatch    Boolean?                 @map("legal_name_match")
+  activeStatusMatch Boolean?                 @map("active_status_match")
+  adminNotes        String?                  @map("admin_notes")
+  createdAt         DateTime                 @default(now()) @map("created_at")
+
+  carrier Carrier @relation(fields: [carrierId], references: [id], onDelete: Cascade)
+
+  @@map("verification_results")
+}
+
+model Agreement {
+  id               String          @id @default(uuid())
+  carrierId        String          @map("carrier_id")
+  method           AgreementMethod
+  status           AgreementStatus // includes 'failed' (Decision 12)
+  envelopeId       String?         @map("envelope_id")
+  signedPdfPath    String?         @map("signed_pdf_path")
+  signerName       String?         @map("signer_name")
+  signerIp         String?         @map("signer_ip")
+  consentTextShown String?         @map("consent_text_shown")
+  signedAt         DateTime?       @map("signed_at")
+  createdAt        DateTime        @default(now()) @map("created_at")
+  updatedAt        DateTime        @updatedAt @map("updated_at")
+
+  carrier Carrier @relation(fields: [carrierId], references: [id], onDelete: Cascade)
+
+  @@map("agreements")
+}
+
+model Load {
+  id             String     @id @default(uuid())
+  carrierId      String?    @map("carrier_id")
+  title          String
+  description    String?
+  origin         String
+  destination    String
+  pickupDate     DateTime?  @map("pickup_date")
+  deliveryDate   DateTime?  @map("delivery_date")
+  rate           Float?
+  source         LoadSource @default(internal)
+  providerLoadId String?    @unique @map("provider_load_id")
+  status         LoadStatus @default(available)
+  rawPayload     Json?      @map("raw_payload")
+  createdAt      DateTime   @default(now()) @map("created_at")
+  updatedAt      DateTime   @updatedAt @map("updated_at")
+
+  carrier Carrier? @relation(fields: [carrierId], references: [id])
+
+  @@map("loads")
+}
+
+model ExternalLoadCache {
+  id             String   @id @default(uuid())
+  provider       String
+  providerLoadId String   @map("provider_load_id")
+  payload        Json
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  @@unique([provider, providerLoadId])
+  @@map("external_loads_cache")
+}
+
+model EmailLog {
+  id             String   @id @default(uuid())
+  leadId         String?  @map("lead_id")
+  carrierId      String?  @map("carrier_id")
+  recipientEmail String   @map("recipient_email")
+  subject        String
+  status         String // sent, failed
+  errorMessage   String?  @map("error_message")
+  createdAt      DateTime @default(now()) @map("created_at")
+
+  lead    Lead?    @relation(fields: [leadId], references: [id], onDelete: SetNull)
+  carrier Carrier? @relation(fields: [carrierId], references: [id], onDelete: SetNull)
+
+  @@map("email_logs")
+}
+
+model AuditLog {
+  id          String   @id @default(uuid())
+  adminUserId String?  @map("admin_user_id")
+  action      String
+  entityType  String   @map("entity_type")
+  entityId    String?  @map("entity_id")
+  details     Json?
+  ipAddress   String?  @map("ip_address")
+  userAgent   String?  @map("user_agent")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  adminUser AdminUser? @relation(fields: [adminUserId], references: [id], onDelete: SetNull)
+
+  @@map("audit_logs")
+}

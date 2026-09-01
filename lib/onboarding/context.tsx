@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 import { createContext, useCallback, useContext, useEffect, useReducer, useRef, type ReactNode } from 'react';
 import { obApi, OnboardingApiError } from './api';
 
@@ -8,7 +8,31 @@ export interface CarrierData {
   legalName?: string | null; dbaName?: string | null; authorityNumber?: string | null;
   dotNumber?: string | null; ein?: string | null; address?: string | null;
   phone?: string | null; email?: string | null; paymentPreference?: string | null;
-  factoringCompanyName?: string | null; documents?: CarrierDocument[];
+  factoringCompanyName?: string | null;
+  factoringNoaEmail?: string | null; documents?: any[];
+  // Section 2: Technical Equipment
+  activeTrucksCount?: number | null;
+  truckType?: string | null;
+  trailerConfig?: any | null;
+  maxFreightWeight?: string | null;
+  carriesTarps?: boolean | null;
+  tarpSize?: string | null;
+  strapCount?: number | null;
+  chainBinderCount?: number | null;
+  hasFastCard?: boolean | null;
+  hasTwicCard?: boolean | null;
+  // Section 3: Freight Preferences
+  preferredOrigins?: string | null;
+  preferredDestinations?: string | null;
+  minRatePerMile?: number | null;
+  prohibitedLocations?: string | null;
+  comfortableWithLayovers?: boolean | null;
+  // Section 5: Directory & Contact
+  dispatchContactName?: string | null;
+  dispatchPhone?: string | null;
+  dispatchEmail?: string | null;
+  afterHoursCell?: string | null;
+  accountingEmail?: string | null;
 }
 export interface LeadData { companyName?: string; contactName?: string; email?: string; phone?: string; }
 export interface SessionData {

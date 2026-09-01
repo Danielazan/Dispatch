@@ -1,14 +1,14 @@
 /* ============ site v2 (PART 4 / GAP-013) ============ */
 /*
-SITE CONFIG — single source for all brand strings (§1.7/§24).
-Brand decision: AIK Freight Dispatch.
+SITE CONFIG â€” single source for all brand strings (Â§1.7/Â§24).
+Brand decision: AIK Dispatch Solution Inc.
 */
 export const siteConfig = {
   brand: "AIK",
   descriptor: "FREIGHT DISPATCH",
   phone: "(833) 476-4278",
   phoneHref: "tel:+18334764278",
-  hours: "Mon – Sat 7AM – 7PM CST",
+  hours: "Mon â€“ Sat 7AM â€“ 7PM CST",
 } as const;
 
 export interface NavLink { label: string; href: string; external?: boolean; }
@@ -21,16 +21,16 @@ export const NAV_LINKS: NavLink[] = [
 ];
 
 export const site = {
-  brand: "AIK Freight Dispatch",
-  wordmark: "AIK FREIGHT DISPATCH",
+  brand: "AIK Dispatch Solution Inc",
+  wordmark: "AIK Dispatch Solution Inc",
   wordmarkSub: "D I S P A T C H",
   tagline: ["DRIVING OPPORTUNITY.", "DELIVERING MORE."],
   portal: "Carrier Onboarding Portal",
   sidebar: { title: "CARRIER ONBOARDING", meta: ["Secure", "Verified", "Trusted"] },
   footer: {
-    line1: "AIK FREIGHT DISPATCH",
+    line1: "AIK Dispatch Solution Inc",
     line2: "Carrier Onboarding Portal",
-    meta: ["All times in UTC", "Version 1.0.0", "© 2025 AIK Freight Dispatch, LLC", "Secure Connection"],
+    meta: ["All times in UTC", "Version 1.0.0", "Â© 2025 AIK Dispatch Solution Inc, LLC", "Secure Connection"],
   },
   support: {
     title: "Need Help?",
@@ -38,20 +38,20 @@ export const site = {
     cta: "Contact Support",
     href: "",
   },
-  /* PART 4 / GAP-013 — Get Help channels (option a: direct links).
+  /* PART 4 / GAP-013 â€” Get Help channels (option a: direct links).
      Q3 FLAG: email is a PLACEHOLDER until the final domain is confirmed.
-     WhatsApp defaults to the same line as phone — swap here only. */
+     WhatsApp defaults to the same line as phone â€” swap here only. */
   supportChannels: {
     phoneLabel: "(833) 476-4278",
     phoneHref: "tel:+18334764278",
     whatsapp: "18334764278", // international format, digits only, no +
-    whatsappPrefill: "Hello AIK Freight Dispatch — I need help with my carrier onboarding.",
-    email: "onyijodan@gmail.com", // PLACEHOLDER — replace per Q3
-    hours: "Mon – Sat: 7AM – 7PM CST",
+    whatsappPrefill: "Hello AIK Dispatch Solution Inc â€” I need help with my carrier onboarding.",
+    email: "onyijodan@gmail.com", // PLACEHOLDER â€” replace per Q3
+    hours: "Mon â€“ Sat: 7AM â€“ 7PM CST",
   },
   saveReminder:
     "You can save and exit anytime. Return to continue where you left off. All progress is safely saved automatically.",
-  welcomeEyebrow: "WELCOME TO AIK FREIGHT DISPATCH",
+  welcomeEyebrow: "WELCOME TO AIK Dispatch Solution Inc",
   welcomeHeadline:
     "Complete your carrier profile to get access to our load board and start hauling with us.",
   candidate: "Carrier Candidate",
@@ -62,11 +62,11 @@ export const site = {
     "All data is encrypted and handled in accordance with our privacy and security standards.",
 } as const;
 
-/* Mirror of backend src/config/legalText.js (provided verbatim). PLACEHOLDER — not for client-facing launch. */
+/* Mirror of backend src/config/legalText.js (provided verbatim). PLACEHOLDER â€” not for client-facing launch. */
 export const LEGAL_TEXT = {
   agreementTitle: "Legal Representation Authorization",
-  agreementBody: "PLACEHOLDER — final agreement text must be provided and approved before production launch.",
-  consentCheckboxLabel: "PLACEHOLDER — final consent language must be provided before production launch.",
+  agreementBody: "PLACEHOLDER â€” final agreement text must be provided and approved before production launch.",
+  consentCheckboxLabel: "PLACEHOLDER â€” final consent language must be provided before production launch.",
 } as const;
 
 export type MediaAsset = {

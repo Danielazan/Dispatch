@@ -10,9 +10,8 @@ export default function HeroContent() {
       </p>
 
       <h1 className="hero-headline mt-6 font-display font-semibold uppercase text-ivory-50">
-        <span className="block reveal" style={{ animationDelay: "230ms" }}>More Miles.</span>
-        <span className="block reveal" style={{ animationDelay: "310ms" }}>Better Loads.</span>
-        <span className="block reveal" style={{ animationDelay: "390ms" }}>Less Empty.</span>
+        <span className="block reveal" style={{ animationDelay: "230ms" }}>Strategic Dispatch,</span>
+        <span className="block reveal" style={{ animationDelay: "310ms" }}>stronger miles.</span>
       </h1>
 
       <p
@@ -20,7 +19,7 @@ export default function HeroContent() {
         style={{ animationDelay: "470ms" }}
       >
         We handle the calls, negotiation, and paperwork so you can focus on
-        what matters—driving and growing your business.
+        what mattersÃ¢â‚¬â€driving and growing your business.
       </p>
     </div>
   );

@@ -1,4 +1,4 @@
-/* ============ ApplicationShell v4 (PART 5 — responsive shell + drawer) ============ */
+/* ============ ApplicationShell v4 (PART 5 ÃƒÆ’Ã†’Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†’Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒ…Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†’Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â responsive shell + drawer) ============ */
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
@@ -7,8 +7,8 @@ import { ApplicationHeader } from './ApplicationHeader';
 import { PrimarySidebar } from './PrimarySidebar';
 import { ContextRail } from './ContextRail';
 import { ApplicationFooter } from './ApplicationFooter';
-import { SceneController } from './SceneController';
 import { useOnboarding } from '@/lib/onboarding/context';
+import { SceneController } from './SceneController';
 import { createSystemWakeTimeline } from '@/motion/onboardingMotion';
 
 export function ApplicationShell() {
@@ -45,7 +45,7 @@ export function ApplicationShell() {
       <div className="flex flex-col flex-1 min-w-0">
         <ApplicationHeader onMenu={() => setDrawerOpen(true)} />
 
-        {/* Mobile progress strip — replaces the rail below lg */}
+        {/* Mobile progress strip ÃƒÆ’Ã†’Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†’Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒ…Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†’Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â replaces the rail below lg */}
         <div className="lg:hidden flex items-center gap-3 px-4 py-2 border-b border-steel-700/20 bg-ink-950">
           <span className="font-tech text-[11px] text-brass-400">{percent}%</span>
           <div className="flex-1 h-1 rounded-full bg-steel-700/40 overflow-hidden">

@@ -1,4 +1,4 @@
-﻿/* ============ Scene07Submit v3 ============ */
+/* ============ Scene07Submit v3 ============ */
 'use client';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useOnboarding, useSceneSave } from '@/lib/onboarding/context';
@@ -6,20 +6,41 @@ import { obApi } from '@/lib/onboarding/api';
 import { LEGAL_TEXT } from '@/config/site';
 import { PenLine, Eraser, AlertTriangle, CheckCircle2, ExternalLink, ShieldAlert } from 'lucide-react';
 
-/* Map 422 missing carrier fields â†’ the scene that owns them. Mirrors submissionRequirements.js. */
+/* Map 422 missing carrier fields Ã¢â€ ’ the scene that owns them. Mirrors submissionRequirements.js. */
 const FIELD_TO_STEP: Record<string, { step: number; label: string }> = {
-  legalName: { step: 0, label: 'Business Information' },
-  dbaName: { step: 0, label: 'Business Information' },
-  address: { step: 0, label: 'Business Information' },
-  phone: { step: 0, label: 'Business Information' },
-  email: { step: 0, label: 'Business Information' },
-  authorityNumber: { step: 1, label: 'Authority & Compliance' },
-  dotNumber: { step: 1, label: 'Authority & Compliance' },
-  ein: { step: 1, label: 'Authority & Compliance' },
-  paymentPreference: { step: 3, label: 'Driver & Fleet Details' },
-  factoringCompanyName: { step: 3, label: 'Driver & Fleet Details' },
+  legalName: { step: 0, label: 'Company Profile & Authorities' },
+  dbaName: { step: 0, label: 'Company Profile & Authorities' },
+  authorityNumber: { step: 0, label: 'Company Profile & Authorities' },
+  dotNumber: { step: 0, label: 'Company Profile & Authorities' },
+  ein: { step: 0, label: 'Company Profile & Authorities' },
+  address: { step: 0, label: 'Company Profile & Authorities' },
+  phone: { step: 0, label: 'Company Profile & Authorities' },
+  email: { step: 0, label: 'Company Profile & Authorities' },
+  activeTrucksCount: { step: 1, label: 'Technical Equipment' },
+  truckType: { step: 1, label: 'Technical Equipment' },
+  trailerConfig: { step: 1, label: 'Technical Equipment' },
+  maxFreightWeight: { step: 1, label: 'Technical Equipment' },
+  carriesTarps: { step: 1, label: 'Technical Equipment' },
+  tarpSize: { step: 1, label: 'Technical Equipment' },
+  strapCount: { step: 1, label: 'Technical Equipment' },
+  chainBinderCount: { step: 1, label: 'Technical Equipment' },
+  hasFastCard: { step: 1, label: 'Technical Equipment' },
+  hasTwicCard: { step: 1, label: 'Technical Equipment' },
+  preferredOrigins: { step: 2, label: 'Freight Preferences' },
+  preferredDestinations: { step: 2, label: 'Freight Preferences' },
+  minRatePerMile: { step: 2, label: 'Freight Preferences' },
+  prohibitedLocations: { step: 2, label: 'Freight Preferences' },
+  comfortableWithLayovers: { step: 2, label: 'Freight Preferences' },
+  paymentPreference: { step: 3, label: 'Billing & Payment' },
+  factoringCompanyName: { step: 3, label: 'Billing & Payment' },
+  factoringNoaEmail: { step: 3, label: 'Billing & Payment' },
+  dispatchContactName: { step: 4, label: 'Directory & Contacts' },
+  dispatchPhone: { step: 4, label: 'Directory & Contacts' },
+  dispatchEmail: { step: 4, label: 'Directory & Contacts' },
+  afterHoursCell: { step: 4, label: 'Directory & Contacts' },
+  accountingEmail: { step: 4, label: 'Directory & Contacts' },
 };
-const DOCUMENTS_STEP = 4;
+const DOCUMENTS_STEP = 5;
 
 const DOC_LABELS: Record<string, string> = {
   mc_authority_letter: 'MC Authority Letter',
@@ -33,10 +54,10 @@ function fieldError(details: any[] | undefined, path: string): string | undefine
   return details.find((d) => d?.path === path)?.message;
 }
 
-/* GAP-011 RESOLVED (2026-08-22) â€” real 422 envelope captured:
+/* GAP-011 RESOLVED (2026-08-22) Ã¢â‚¬â€ real 422 envelope captured:
    error.code = 'submission_incomplete'
    error.details = [{ path: 'carrier.<field>' | 'documents.<type>', message }]
-   Paths are DOT-JOINED with a prefix â†’ strip 'carrier.' / 'documents.' before routing. */
+   Paths are DOT-JOINED with a prefix Ã¢â€ ’ strip 'carrier.' / 'documents.' before routing. */
 function parseMissing(e: any): { carrierFields: string[]; documents: string[] } | null {
   const details = Array.isArray(e?.details) ? e.details : [];
   if (details.length === 0) return null;
@@ -81,7 +102,7 @@ export function Scene07Submit() {
     return () => { cancelled = true; };
   }, [state.token]);
 
-  /* ---- Canvas signature capture (touch-friendly, â‰¤800px PNG) ---- */
+  /* ---- Canvas signature capture (touch-friendly, Ã¢â€°Â¤800px PNG) ---- */
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const drawing = useRef(false);
   const lastPoint = useRef<{ x: number; y: number } | null>(null);
@@ -163,7 +184,7 @@ export function Scene07Submit() {
   }, [hasSignature]);
 
   /* ---- STEP 2 helper: sign AFTER submit. Retries briefly because the
-         agreement dispatch runs async server-side (Integration Ref Â§12). ---- */
+         agreement dispatch runs async server-side (Integration Ref Ã‚Â§12). ---- */
   const signAgreement = async (signatureImage: string): Promise<'signed' | 'already' | 'failed'> => {
     for (let attempt = 1; attempt <= 3; attempt++) {
       try {
@@ -176,7 +197,7 @@ export function Scene07Submit() {
       } catch (e: any) {
         if (e?.status === 409 && e?.code === 'agreement_already_signed') return 'already';
         if (e?.code === 'no_active_agreement' && attempt < 3) {
-          await new Promise((r) => setTimeout(r, 900)); // async dispatch race â€” retry
+          await new Promise((r) => setTimeout(r, 900)); // async dispatch race Ã¢â‚¬â€ retry
           continue;
         }
         if (e?.status === 400) {
@@ -187,7 +208,7 @@ export function Scene07Submit() {
           });
           return 'failed';
         }
-        if (e?.status === 429) { setError('Too many signature attempts â€” please wait a moment and try again.'); return 'failed'; }
+        if (e?.status === 429) { setError('Too many signature attempts Ã¢â‚¬â€ please wait a moment and try again.'); return 'failed'; }
         if (e?.status === 410) { reload(); return 'failed'; }
         return 'failed';
       }
@@ -195,8 +216,8 @@ export function Scene07Submit() {
     return 'failed';
   };
 
-  /* ---- v3 SEQUENCE (backend wins over handover Â§10.3 â€” DOC-DIFF-2):
-         SUBMIT first (creates the agreement) â†’ SIGN â†’ refreshSession. ---- */
+  /* ---- v3 SEQUENCE (backend wins over handover Ã‚Â§10.3 Ã¢â‚¬â€ DOC-DIFF-2):
+         SUBMIT first (creates the agreement) Ã¢â€ ’ SIGN Ã¢â€ ’ refreshSession. ---- */
   const handleSubmit = async () => {
     setError(null);
     setFieldErrors({});
@@ -210,11 +231,11 @@ export function Scene07Submit() {
     if (Object.keys(fe).length) { setFieldErrors(fe); return; }
 
     const signatureImage = exportSignature();
-    if (signatureMode === 'canvas' && !signatureImage) { setFieldErrors({ signature: 'Unable to read the signature â€” please sign again.' }); return; }
+    if (signatureMode === 'canvas' && !signatureImage) { setFieldErrors({ signature: 'Unable to read the signature Ã¢â‚¬â€ please sign again.' }); return; }
 
     setSubmitting(true);
     try {
-      // STEP 1 â€” SUBMIT
+      // STEP 1 Ã¢â‚¬â€ SUBMIT
       let submitted = false;
       try {
         await obApi.submit(state.token);
@@ -225,28 +246,28 @@ export function Scene07Submit() {
           setError('Your application is incomplete. Resolve the items below, then return here to submit.');
           setSubmitting(false); return;
         } else if (e?.status === 423) {
-          submitted = true; // already submitted earlier â€” recover into signature
-          setAgreementNote('Application already submitted â€” completing your signature.');
+          submitted = true; // already submitted earlier Ã¢â‚¬â€ recover into signature
+          setAgreementNote('Application already submitted Ã¢â‚¬â€ completing your signature.');
         } else if (e?.status === 429) {
-          setError('Too many attempts â€” please wait a moment and try again.');
+          setError('Too many attempts Ã¢â‚¬â€ please wait a moment and try again.');
           setSubmitting(false); return;
         } else if (e?.status === 410) {
           reload(); setSubmitting(false); return;
         } else throw e;
       }
 
-      // STEP 2 â€” SIGN (agreement now exists; retry handles the async race)
+      // STEP 2 Ã¢â‚¬â€ SIGN (agreement now exists; retry handles the async race)
       if (submitted) {
         const outcome = await signAgreement(signatureImage ?? '');
         if (outcome === 'signed') setAgreementNote('Signature recorded. Your application is submitted.');
-        else if (outcome === 'already') setAgreementNote('Agreement already signed â€” proceeding.');
-        // 'failed' â†’ still submitted; refreshSession below shows the true state
+        else if (outcome === 'already') setAgreementNote('Agreement already signed Ã¢â‚¬â€ proceeding.');
+        // 'failed' Ã¢â€ ’ still submitted; refreshSession below shows the true state
       }
 
-      // STEP 3 â€” response-shape-agnostic refetch (D11) â†’ AlreadySubmittedState
+      // STEP 3 Ã¢â‚¬â€ response-shape-agnostic refetch (D11) Ã¢â€ ’ AlreadySubmittedState
       await refreshSession();
     } catch (e: any) {
-      setError(e?.message ?? 'Submission failed â€” please try again.');
+      setError(e?.message ?? 'Submission failed Ã¢â‚¬â€ please try again.');
     } finally {
       setSubmitting(false);
     }
@@ -259,7 +280,7 @@ export function Scene07Submit() {
         <div>
           <h3 className="text-[15px] font-semibold text-ivory-50">Authorization & Signature</h3>
           <p className="text-[12px] text-steel-400">
-            Read the authorization below, then sign. This is the point of no return â€” after submission your application is locked for review.
+            Read the authorization below, then sign. This is the point of no return Ã¢â‚¬â€ after submission your application is locked for review.
           </p>
         </div>
       </div>
@@ -267,7 +288,7 @@ export function Scene07Submit() {
       <div className="flex items-start gap-2.5 border border-brass-500/40 rounded-[6px] px-3 py-2 bg-brass-500/5 mb-4">
         <AlertTriangle size={14} className="text-brass-400 shrink-0 mt-0.5" />
         <p className="text-[12px] leading-relaxed text-brass-300">
-          Final legal copy pending â€” the consent language shown is a placeholder and must be replaced with approved copy before production launch.
+          Final legal copy pending Ã¢â‚¬â€ the consent language shown is a placeholder and must be replaced with approved copy before production launch.
         </p>
       </div>
 
@@ -293,7 +314,7 @@ export function Scene07Submit() {
 
       {signatureMode === 'loading' && (
         <div className="rounded-[8px] border border-steel-700/30 bg-ink-900/30 h-40 grid place-items-center">
-          <p className="text-[12px] text-steel-400">Preparing signature padâ€¦</p>
+          <p className="text-[12px] text-steel-400">Preparing signature padÃ¢â‚¬Â¦</p>
         </div>
       )}
 
@@ -369,14 +390,14 @@ export function Scene07Submit() {
               return (
                 <button key={f} type="button" onClick={() => goToStep(t.step)}
                   className="block text-left text-[12px] text-brass-300 underline decoration-brass-500/40 hover:text-brass-200">
-                  {f} â†’ {t.label}
+                  {f} Ã¢â€ ’ {t.label}
                 </button>
               );
             })}
             {missing.documents.map((doc) => (
               <button key={doc} type="button" onClick={() => goToStep(DOCUMENTS_STEP)}
                 className="block text-left text-[12px] text-brass-300 underline decoration-brass-500/40 hover:text-brass-200">
-                {DOC_LABELS[doc] ?? doc} â†’ Documents Upload
+                {DOC_LABELS[doc] ?? doc} Ã¢â€ ’ Documents Upload
               </button>
             ))}
           </div>
@@ -388,7 +409,7 @@ export function Scene07Submit() {
       <div className="flex items-center gap-4">
         <button type="button" onClick={handleSubmit} disabled={submitting || signatureMode === 'loading'}
           className="group flex items-center gap-3 h-11 px-8 rounded-[7px] bg-brass-500 hover:bg-brass-400 text-ink-950 text-[13px] font-display font-semibold uppercase tracking-[0.06em] shadow-[0_16px_36px_rgba(0,0,0,0.18)] transition-colors disabled:opacity-60">
-          {submitting ? 'Submittingâ€¦' : 'Sign & Submit Application'}
+          {submitting ? 'SubmittingÃ¢â‚¬Â¦' : 'Sign & Submit Application'}
         </button>
         <span className="text-[11px] text-steel-500 max-w-[260px]">
           Submitting locks this application for compliance review. You'll receive confirmation by email.
